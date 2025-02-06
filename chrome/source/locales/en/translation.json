@@ -57,7 +57,7 @@
         "varTip1":"1. Environment Variable can used in url,params,header. For Example:{{variable}}"
     },
     "head" :{
-        "title":"Postwoman | Http Test"
+        "title":"BestHttp | Http Test"
     },
     "nav":{
         "loginOut":"Logout",
@@ -104,7 +104,7 @@
         "defMenuWidth":"Default menu width - 15%",
         "menuWidthTip":"Menu width must be number (%)",
         "inputServiceUrlTip":"Please input remote service website url",
-        "defServiceUrlTip":"『Default Service Url』api.crap.cn -- 『Backup url』postwoman.cn , plug.crap.cn , api2.crap.cn ...",
+        "defServiceUrlTip":"『Default Service Url』api.crap.cn -- 『Backup url』BestHttp.cn , plug.crap.cn , api2.crap.cn ...",
         "inputTimeoutTip":"Please input http timeout (ms)",
         "defTimeoutTip":"Default timeout — 10000(ms)",
         "autoFix":"Auto fix（auto add 'http://' for url, auto trim for param & url）"
