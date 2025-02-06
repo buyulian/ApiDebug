@@ -1,28 +1,41 @@
 {
-   "author": "ihsantang@163.com",
-   "background": {
-      "page": "background.html"
-   },
-   "browser_action": {
-      "default_icon": "logo.png",
-      "default_popup": "index.html",
-      "default_title": "__MSG_appName__"
-   },
-   "content_scripts": [ {
-      "js": [ "source/tools/jquery-1.9.1.min.js", "source/content_scripts.js" ],
-      "matches": [ "http://*/*", "https://*/*" ]
-   } ],
+   "manifest_version": 3,
+   "name": "__MSG_appName__",
+   "version": "2.0.0",
    "default_locale": "zh_CN",
    "description": "__MSG_appDesc__",
+   "author": "handsome man",
    "icons": {
       "128": "logo.png",
       "64": "logo.png"
    },
-   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAoDvSBDo/oJPD6bhppWovrIpjuOOYLlwVTG6eqdFV5bu8m9U60mV79rgGV2CDDns5zuCnDXjEgAMXx32PPed1FQy+mmwQYlz7zgLsGNDD9jX8di0XQO9goezKhrawzwgKsKQ7oiTZeRVOcErYwPo9hkMnKXfvZX8MKDG9JOVZqDMTxC1/f4frpWthbgsRSPxYgkFT2E/OrCDbrPOrDgFRX+zByAChfADBeBw1XQFLXjqaHktEwiFPTs9gDHvB7qGh4A9REiYM8iLtQK0/dOgupUMCWmMDFU0UqQMjzYXx8nLXza3I0wTcxyEUmraH0xHVJea4UcW15VRJBTXaO7/HtwIDAQAB",
-   "manifest_version": 2,
-   "name": "__MSG_appName__",
-   "optional_permissions": [ "http://*/*", "https://*/*", "cookies" ],
-   "permissions": [  ],
-   "update_url": "https://clients2.google.com/service/update2/crx",
-   "version": "1.2.7"
+   "action": {
+      "default_icon": "logo.png",
+      "default_popup": "index.html",
+      "default_title": "__MSG_appName__"
+   },
+   "background": {
+      "service_worker": "background.js"
+   },
+   "content_scripts": [
+      {
+         "matches": [
+            "http://*/*",
+            "https://*/*"
+         ],
+         "js": [
+            "source/tools/jquery-1.9.1.min.js",
+            "source/content_scripts.js"
+         ]
+      }
+   ],
+   "permissions": [],
+   "host_permissions": [
+      "http://*/*",
+      "https://*/*"
+   ],
+   "optional_permissions": [
+      "cookies"
+   ],
+   "update_url": "https://client.goog.com/service/update2/crx"
 }
