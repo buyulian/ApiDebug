@@ -21,6 +21,7 @@ input{
     vertical-align: middle;
     display: table-cell!important;
 }
+.btn{outline: none!important;}
 .GET{color:#99cc66;}
 .POST{color:#ff9933;}
 .DELETE{color:red;}
@@ -30,6 +31,10 @@ input{
 }
 .color-adorn {
     color: #ff4530;
+}
+.bg-adorn {
+    background-color: #ff4530!important;
+    color: #ffffff!important;
 }
 .bg-main {
     background-color: #5e71e4!important;
@@ -42,13 +47,14 @@ input{
     -moz-border-radius: 4px;-webkit-border-radius: 4px;border-radius: 4px;-khtml-border-radius: 4px;
     border: 0px;
     background: rgba(255, 255, 255, 0.3);
-    font-weight: 300;
+    font-weight: normal;
     color: #ffffff;
     -webkit-transition: all 0.2s ease-in-out;
     -o-transition: all 0.2s ease-in-out;
     transition: all 0.2s ease-in-out;
 }
 .btn-menu:hover, .btn-menu:focus {
+    border: 1px solid #ff4530!important;
     background: #ff4530!important;
     color: #ffffff!important;
     font-weight:300;
@@ -86,8 +92,8 @@ input{
 }
 
 .btn-default:hover{
-    border: 1px solid #333333;
-    background: #333333;
+    border: 1px solid #666666;
+    background: #666666;
     color: #ffffff;
 }
 #params-div .iconfont, #headers-div .iconfont {
@@ -118,8 +124,14 @@ input{
 /************debug***************/
 .bl3{border-left:3px solid #ff4530}
 .bb2{border-bottom:2px solid #4e61d4}
-.params-headers-table input, .table-input{font-size:12px!important; border:0px!important;padding:2px 5px!important;height:25px!important;}
+.adorn-bb2{border-bottom:2px solid #ff4530}
+
+.params-headers-table input{border-radius: 0px; font-size:12px!important; border:0px!important;padding:2px 5px!important;height:30px!important;border-bottom:1px solid #eeeeee!important;}
+.table-input{font-size:12px!important; border:1px solid #EEEEEE!important;padding:2px 5px!important;height:25px!important;}
+
 .params-headers-table td{padding:2px!important}
+.params-headers-table td:first-child{padding-right:20px!important}
+
 /************popup***************/
 .title {
     margin-top: 0;
@@ -138,7 +150,6 @@ input{
     bottom: -1px;
 }
 #historys div, .panel-body div {
-    border-bottom:1px solid #f5f5f5;
     color:#495057;
     height:36px;
     font-size: 12px;
@@ -152,6 +163,10 @@ input{
 .panel-body div:hover{
     background-color:#4e61d4;
     color:#ffffff;
+}
+.panel-body .iconfont{
+    font-size: 16px;
+    margin-top: -2px;
 }
 .more{
     text-align:center;
@@ -216,6 +231,9 @@ input{
     padding-bottom:10px;
 
 }
+.module-title-ico{
+    color:#aaaaaa;
+}
 /*****************加载浮层***************************/
 .folat{
     display:none;
@@ -278,6 +296,19 @@ input{
     background: #c1e2b3;
     color: #333333;
 }
+/****** 搜索 ******/
+#id-search:hover{
+    border:1px solid #4e61d4!important;
+}
+#id-search input{
+    border:0px !important;
+    box-shadow: none!important;
+}
+#id-search input:focus{
+    border:0px !important;
+    box-shadow: none!important;
+}
+#response-row:focus {outline: none;border:1px solid #4e61d4;}
 /*************loading************/
 .sk-wave .sk-rect {
     background-color: #4e61d4;
@@ -328,6 +359,5 @@ input{
 /****************字体*********************/
 body, h1, h2, h3, h4, h5, h6, hr, blockquote, dl, dt, dd, ul, ol, li,
 pre, form, fieldset, legend, button, input, textarea, th, td {
-    font-family: "Lantinghei SC", "Open Sans", Arial, "Hiragino Sans GB", "Microsoft YaHei", "STHeiti", "WenQuanYi Micro Hei", SimSun, sans-serif;
-}
+    font-family: PingFang SC,Lantinghei SC,Helvetica Neue,Helvetica,Arial,Microsoft YaHei,"\5FAE\8F6F\96C5\9ED1",STHeitiSC-Light,simsun,"\5B8B\4F53",WenQuanYi Zen Hei,WenQuanYi Micro Hei,"sans-serif";}
 

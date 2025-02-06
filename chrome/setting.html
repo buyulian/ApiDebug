@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title></title>
+    <title data-i18n="head.title"></title>
 	<link href="source/base.css" rel="stylesheet" type="text/css" />
 	<link href="source/tools/bootstrap.css" rel="stylesheet" type="text/css" />
 	<link href="source/plug.css" rel="stylesheet" type="text/css" />
@@ -49,12 +49,22 @@
 
 			<div class="col-xs-3">
 				<div class="shadow-3 p20">
+					<div class="bl3 pl10 f16" data-i18n="set.menuWidth"></div>
+					<input id="crap-menu-width" class="form-control w h BGFFF mt20" type="number" data-i18n="[placeholder]set.menuWidthTip"/>
+					<div class="C999 mt10"  data-i18n="set.defMenuWidth">默认宽度 — 18%</div>
+					<button class="btn btn-main btn-sm fr mt10 submitSetting w" crap-data-name="crap-menu-width" data-i18n="submit">提交</button>
+					<div class="cb"></div>
+				</div>
+			</div>
+
+			<div class="col-xs-3">
+				<div class="shadow-3 p20">
 					<div class="bl3 pl10 f16" data-i18n="set.language"></div>
 					<select class="form-control mt20" id="crap-setting-language">
 						<option value="zh">简体中文</option>
 						<option value="en">English</option>
 					</select>
-					<button class="btn btn-main btn-sm fr mt10 submitSetting w" crap-data-name="crap-setting-language" data-i18n="submit">提交</button>
+					<button class="btn btn-main btn-sm fr mt10 submitSetting w" crap-data-name="crap-setting-language" data-i18n="submitTowLag">提交</button>
 					<div class="cb"></div>
 				</div>
 			</div>
@@ -63,6 +73,27 @@
 				<div class="shadow-3 p20"></div>
 				<div class="cb"></div>
 			</div>-->
+
+		</div>
+
+
+
+		<div class="row mt10">
+			<div class="col-xs-3">
+				<div class="shadow-3 p20">
+					<div class="bl3 pl10 f16" data-i18n="set.autoFix"></div>
+					<select class="form-control mt20" id="crap-setting-auto-fix">
+						<option value="true"  data-i18n="true">开启</option>
+						<option value="false" data-i18n="false">关闭</option>
+					</select>
+					<button class="btn btn-main btn-sm fr mt10 submitSetting w" crap-data-name="crap-setting-auto-fix" data-i18n="submitTowLag">提交</button>
+					<div class="cb"></div>
+				</div>
+			</div>
+
+			<div class="col-xs-9">
+			</div>
+
 
 		</div>
 	</div>

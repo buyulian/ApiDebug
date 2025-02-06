@@ -1,10 +1,10 @@
 {
-  "appName": {
-    "message": "PostWoman Http Test",
-    "description": "PostWoman Http Test"
-  },
-  "appDesc": {
-    "message": "PostWoman is a plug for testing RESTful web services, like postman.", 
-    "description":"PostWoman is a plug for testing RESTful web services, like postman."
-  }
+   "appDesc": {
+      "description": "PostWoman is a plug for testing RESTful web services, like postman.",
+      "message": "PostWoman is a plug for testing RESTful web services, like postman."
+   },
+   "appName": {
+      "description": "PostWoman Http Test",
+      "message": "PostWoman Http Test"
+   }
 }

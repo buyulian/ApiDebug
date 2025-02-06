@@ -1,5 +1,7 @@
 var ENV_LOC_KEY = "crap-env-list";
 var VAR_LOC_KEY = "crap-var-list-";
+var DEF_ENV_ID = "crap-env-def-id";
+var DEF_ENV_NAME = "crap-env-def-name";
 
 function saveAllEnv(envList){
     localStorage[ENV_LOC_KEY] = JSON.stringify(envList);
@@ -26,6 +28,9 @@ function getAllEnv(){
 }
 
 function getAllVar(envId){
+    if (handerStr(envId) == ""){
+        return $.parseJSON("[]");
+    }
     try {
         var lovVarList = localStorage[VAR_LOC_KEY + envId];
         if (lovVarList == null){

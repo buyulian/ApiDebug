@@ -10,38 +10,50 @@
 <body>
 <input id="id-page-name" type="hidden" value="index">
 <div class="container min-w300">
-		<div class="row p0 m0 p20">
-			<h4 class="title" data-i18n="head.title">Crap | Http接口调试插件</h4>
+		<div class="row p0 m0 p20 mb20">
+			<h4 class="title f14" data-i18n="head.title">Postwoman | Http接口调试插件</h4>
 			<a id="open-debug" class="btn btn-block btn-main">
 				<i class='iconfont mt-1 pr10'>&#xe748;</i>
 				<span data-i18n="interfaceDebug">接口调试</span>
 			</a>
 
-			<a id="open-json" class="btn btn-block btn-default mt10">
-				<i class='iconfont mt-1 pr10'>&#xe600;</i>
-				<span data-i18n="jsonTool">Json格式化</span>
+			<a id="more-tools" class="btn btn-block btn-default f12">
+				<span data-i18n="moreTools">更多工具</span>
 			</a>
 
-			<a href="http://api.crap.cn" target="_blank" class="btn btn-block btn-default mt10">
-				<i class='iconfont mt-1 pr10 color-adorn f16'>&#xe8e8;</i>
-				<span data-i18n="officialWebsite">官网</span>
-			</a>
-
-			<a id="set-web-site" class="btn btn-block btn-default mt10">
-				<i class='iconfont mt-1 pr10'>&#xe6ae;</i>
-				<span data-i18n="setting">系统设置</span>
-			</a>
-
-			<div class="fr mt10 ml20">
-				<a id="login-button" class="cursor" target="_blank" data-i18n="loginAndIco">登陆 →</a>
-			</div>
-			<div class="fr mt10">
-				<a href="http://api.crap.cn/loginOrRegister.do#/register" target="_blank" data-i18n="registerAndIco">注册 →</a>
+			<div>
+				<a href="http://api.crap.cn" target="_blank" class="btn fl btn-default mt10 w-48 bg-adorn">
+					<i class='iconfont mt-1 pr5 f16'>&#xe8e8;</i>
+					<span data-i18n="officialWebsite">官网</span>
+				</a>
+				<div class="w-4 fl CFFF">---</div>
+				<a id="set-web-site" class="btn fl btn-default mt10 w-48">
+					<i class='iconfont mt-1'>&#xe6ae;</i>
+					<span data-i18n="setting" class="f12">设置</span>
+				</a>
 			</div>
 
+			<div class="cb"></div>
 
-							
+			<div>
+				<a id="qr-tool" class="btn btn-default w-48 fl">
+					<span data-i18n="qrTool">二维码</span>
+				</a>
+				<div class="w-4 fl CFFF">---</div>
+				<a id="open-json" class="btn btn-default w-48 fl">
+					<i class='iconfont mt-3 pr5'>&#xe600;</i>
+					<span data-i18n="jsonTool">Json格式化</span>
+				</a>
+			</div>
+
+
+			<a id="qr-tool-div" class="mt10 ndis">
+				<div id="id-qr-tool-get-browser-url" class="cursor" data-i18n="getBrowserUrl">获取浏览器地址</div>
+				<textarea id="qr-tool-text" class="w" rows="3"></textarea>
+				<div id="qr-tool-img" class="w230 h230 mt10 of-h"></div>
+			</a>
 		</div>
+
 	</div>
 	<script src="source/constant.js"></script>
 	<script src="source/tools/jquery-1.9.1.min.js"></script>
@@ -54,5 +66,7 @@
 	<script src="source/plug-function.js"></script>
 	<script src="source/crapApi.js?v=200"></script>
 	<script src="source/json.js?v=200"></script>
+	<script src="source/tools/qr.js?v=200"></script>
+
 </body>
 </html>

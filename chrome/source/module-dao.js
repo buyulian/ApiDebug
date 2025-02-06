@@ -37,7 +37,7 @@ function downModule(moduleId) {
 function getAllModules(){
     var modules;
     try {
-        modules = $.parseJSON(localStorage['crap-debug-modules'])
+        modules = $.parseJSON(localStorage[CRAP_DEBUG_MODULES + getCurrentProjectUniKey()])
     } catch (e) {
         modules = $.parseJSON("[]");
         console.warn(e);
@@ -45,5 +45,5 @@ function getAllModules(){
     return modules;
 }
 function saveAllModules(modules){
-    localStorage['crap-debug-modules'] = JSON.stringify(modules);
+    localStorage[CRAP_DEBUG_MODULES + getCurrentProjectUniKey()] = JSON.stringify(modules);
 }

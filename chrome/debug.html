@@ -17,12 +17,24 @@
 			<button id="id-advertisement-text" class="btn btn-menu btn-sm fl cursor mt5 ml10 ndis"></button>
 		</a>
 
-		<button class="btn btn-menu btn-adorn btn-sm fl mr10 mt5 cursor ml20" id="left-enlarge">
-			<i class="iconfont mr5 mt-1">&#xe699;</i>
-			<span data-i18n="nav.menu">菜单</span>
+		<a id="synch" target="_blank" class="btn btn-menu btn-main btn-sm fl ml20 mt5">
+			<i class="iconfont mr5 mt-1 fb" id="synch-ico">&#xe800;</i>
+			<span data-i18n="nav.sync">同步数据</span>
+		</a>
+
+		<a id="clear-local-data" target="_blank" class="btn btn-menu btn-adorn btn-sm fl ml10 mt5">
+			<i class="iconfont mr5 mt-1">&#xe69d;</i>
+			<span data-i18n="nav.clearLocal">清除本地数据</span>
+		</a>
+
+		<button target="_blank" class="btn btn-menu btn-default btn-sm fl ml10 mt5 goHref" crap-href-title="l_changeProject" crap-href="PLUG:changeProject.html">
+			<i class="iconfont mr5 f10 mt-1 ml5">&#xe6aa;</i>
+			<span id="id-current-project-name">默认调试项目</span>
+			<img id="id-current-project-cover" class="w15 r20 h15 mr5" src="source/image/defCover.jpg"/>
 		</button>
 
-		<div class="fl mr10 mt5 ml20 ndis f12 pt5 fb CFFF" id="id-user-name"></div>
+
+		<a class="fl mr10 pl10 pr10 pt5 pb5 mt5 ml20 f12 r5 text-success ndis" id="id-notice" data-i18n="welcomeTip" href="setting.html">提示</a>
 
 		<a id="login-button" target="_blank" class="btn btn-menu btn-main btn-sm fr mr10 mt5">
 			<i class="iconfont mr5 mt-1">&#xe6b8;</i>
@@ -31,39 +43,51 @@
 
 		<a id="id-logout" class="btn btn-menu btn-sm fr mr10 mt5 ndis btn-adorn">
 			<i class="iconfont mr5 mt-1">&#xe60d;</i>
+			<span id="id-user-name"></span>
 			<span data-i18n="nav.loginOut">退出</span>
 		</a>
 
-		<a id="clear-local-data" target="_blank" class="btn btn-menu btn-sm fr mr10 mt5">
-			<i class="iconfont mr5 mt-1">&#xe69d;</i>
-			<span data-i18n="nav.clearLocal">清除本地数据</span>
+		<a href="moreTools.html" target="_blank" class="btn btn-menu btn-sm fr mr10 mt5">
+			<span data-i18n="moreToolsShort">更多工具</span>
 		</a>
 
 		<a href="json.html" target="_blank" class="btn btn-menu btn-sm fr mr10 mt5">
 			<i class="iconfont mr5 mt-1">&#xe600;</i>
 			<span data-i18n="jsonTool">Json工具</span>
 		</a>
-		<a data-i18n="nav.newTab" href="debug.html" target="_blank" class="btn btn-menu btn-sm fr mr10 mt5">
-			打开新页面
+		<a href="debug.html" target="_blank" class="btn btn-menu btn-sm fr mr10 mt5">
+			<i class="iconfont mr5 mt-1">&#xe880;</i>
+			<span data-i18n="nav.newTab">打开窗口</span>
 		</a>
 
-		<a data-i18n="nav.newInterface" id="new-interface" target="_blank" class="btn btn-menu btn-sm fr mr10 mt5">
-			新建接口
+		<a id="new-interface" target="_blank" class="btn btn-menu btn-sm fr mr10 mt5">
+			<i class="iconfont mr5 mt-1">&#xe6b9;</i>
+			<span data-i18n="nav.newInterface">新建接口</span>
 		</a>
 
-		<a id="synch" target="_blank" class="btn btn-menu btn-sm fr mr10 mt5">
-			<i class="iconfont mr5 mt-1" id="synch-ico">&#xe6aa;</i>
-			<span data-i18n="nav.sync">同步数据</span>
-		</a>
+		<button id="id-web-edit-interface" class="btn btn-menu btn-sm fr mt5 goHref mr50 ndis" crap-href-title="l_editInterfaceTitle"  data-i18n="[crap-href]url.editInterface">
+			<i class="iconfont mr5 mt-1">&#xe69e;</i>
+			<span data-i18n="inter.editDoc">编辑文档</span>
+		</button>
 
+		<a id="id-web-view-interface" class="btn btn-menu btn-sm fr mt5 goHref mr10 ndis" crap-href-new-page="true" data-i18n="[crap-href]url.viewInterface">
+			<i class="iconfont mr5 mt-1">&#xe6e6;</i>
+			<span data-i18n="inter.vieDoc">查看文档</span>
+		</a>
 	</nav>
 
 	<div class="w h pt10 fixed min-w900" id="content">
 
 		<!-- *****************************left************************************ -->
-		<div id="left" class="h m0 fl p0 shadow ofy-a" style="width:18%;">
+		<div id="left" class="h m0 fl p0 shadow ofy-a" style="width:18%">
+			<!-- 搜索 -->
+			<div id="id-search" class="mt50 h35 m10 mb0 b1 r15 of-h input-group pl5">
+				<i class="iconfont group-addon w15 h color-adorn fb">&#xe6ac;</i>
+				<input type="text" id="id-search-text" autocomplete="off" class="form-control b0 h" data-i18n="[placeholder]searchTip">
+				<i class="iconfont group-addon w15 h cursor" id="id-clear-search">&#xe69a;</i>&nbsp;&nbsp;
+			</div>
             <!--接口请求头、参数等切换标签-->
-            <div class="bb1 h45 mt40 f14 C555 pt5">
+            <div class="bb1 h45 f14 C555 pt5">
 				<div class="bb2 fl w-50 tc h40 lh40 cursor" id="modules-title" title="Module">
 					<i class="iconfont f16">&#xe615;</i>&nbsp;&nbsp;
 					<span data-i18n="module">模块</span>
@@ -80,7 +104,7 @@
         </div>
 		<!-- ****************************left end*********************************** -->
 
-		<div id="right" class="BGF9 h m0 fr p0 ofy-s fl"  style="width:82%;">
+		<div id="right" class="BGFFF h m0 fr p0 ofy-s fl" style="width:82%">
 
 			<!--顶部空白-->
 			<div class="BGF9 h40 w"></div>
@@ -92,27 +116,19 @@
 				<input type="hidden" id="module-id" value="-1"/>
 
 				<div class="pl10 pr10">
-
 					<!-- 1.接口名 -->
-					<div class="input-group">
+					<div class="input-group no-radius" id="id-env-group">
 						<span class="w10 group-addon bl3"></span>
-						<input type="text" class="form-control f16 color-main r5 h37" id="interface-name" autocomplete="off" data-i18n="[placeholder]interfaceNameTip"/>
+						<input type="text" class="form-control r0 f16 color-main h37" id="interface-name" autocomplete="off" data-i18n="[placeholder]interfaceNameTip"/>
 						<!-- 环境 -->
 						<span class="w10 group-addon"></span>
-						<div class="dropdown group-addon h37">
-							<button type="button" class="btn btn-default dropdown-toggle h37 f12" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						<div class="dropdown group-addon h37 no-radius">
+							<button type="button" class="btn btn-default dropdown-toggle h37 f12 no-radius" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 								<i class="iconfont mt-2 f16">&#xe641;</i>
-								<span data-i18n="env.envVariable">环境变量</span>
+								<span id="id-current-env-name"></span>
 								<i class="iconfont pl5">&#xe614;</i>
 							</button>
-							<ul class="dropdown-menu dropdown-menu-right">
-								<li><a class="pl10 pr10 cursor f12" data-i18n="saveAs">另存为</a></li>
-								<li role="separator" class="divider pl10 pr10"></li>
-								<li><a href="env.html" target="_blank" class="pl10 pr10">
-									<i class="iconfont color-adorn mt-3 pr5 f14">&#xe604;</i>
-									<span data-i18n='env.manageEnvVariable'>环境变量</span>
-								</a></li>
-							</ul>
+							<ul class="dropdown-menu dropdown-menu-right f12" id="id-interface-env-list"></ul>
 						</div>
 					</div>
 				</div>
@@ -121,7 +137,7 @@
 				<table class="w mt10">
 						<tr>
 							<td class="w100 pr10 pl10">
-								<select class="form-control group-addon w100 h37 dis-in-tab" id="method">
+								<select class="form-control group-addon w100 h37 dis-in-tab BGF5 cursor" id="method">
 									<option value="GET">GET</option>
 									<option value="POST">POST</option>
 									<option value="PUT">PUT</option>
@@ -164,13 +180,19 @@
 				</table>
 
 				<!--接口请求头、参数等切换标签-->
-				<div class="h30 mt10 shadow-b pl10 C555">
-					<div class="params-title menu-title" data-stage="headers-div" data-i18n="right.header">请求头</div>
-                    <div class="params-title menu-title bb2" data-stage="params-div" data-i18n="right.param">请求参数</div>
+				<div class="h30 mt20 shadow-b pl10 C555">
+					<div class="params-title menu-title" data-stage="headers-div">
+						<i class="iconfont color-adorn">&#xeedf;</i>&nbsp;
+						<span data-i18n="right.header">请求头</span>
+					</div>
+                    <div class="params-title menu-title adorn-bb2" data-stage="params-div">
+						<i class="iconfont color-adorn">&#xe60e;</i>&nbsp;
+						<span data-i18n="right.param">参数</span>
+					</div>
 				</div>
 
                 <!--请求头-->
-                <div class="p10 bt1 bb1 none" id="headers-div">
+                <div class="p15 none" id="headers-div">
                     <table class="params-headers-table f12 w"  id="headers-table">
 					<thead>
 							<tr>
@@ -179,7 +201,7 @@
 								</td>
 								<td class="p5" colspan="2">
 									 Value
-									 <a class="bulk-edit fr mr20 color-main cursor" crap-data-value="headers" data-i18n="right.batchEdit">批量编辑</a>
+									 <a class="bulk-edit fr mr20 color-main cursor fw-300" crap-data-value="headers" data-i18n="right.batchEdit">批量编辑</a>
 								</td>
 							</tr>
 						</thead>
@@ -197,14 +219,14 @@
                     </table>
 					
 					<div id="headers-bulk-edit-div" class=" f12 none">
-							<a class="key-value-edit fr  mr20 color-main cursor" crap-data-value="headers" data-i18n="right.singleEdit">单个编辑</a>
+							<a class="key-value-edit fr mr20 color-main cursor fw-300" crap-data-value="headers" data-i18n="right.singleEdit">单个编辑</a>
 							<textarea id="headers-bulk" class="form-control w BGFFF min-h100 max-w" placeholder="key:value"></textarea>
 						</div>
                 </div>
 				<!--请求头-->
 
                 <!--参数-->
-                <div class="bb1" id="params-div">
+                <div id="params-div">
                     <div id="content-type" class="f12 p10 C999 pl20 none">
 						<div class="fl">
 							<input type="radio" name="param-type" checked  id="param-type-value"  value="application/x-www-form-urlencoded;charset=UTF-8"> x-www-form-urlencoded;charset=UTF-8&nbsp;&nbsp;&nbsp;
@@ -223,7 +245,7 @@
 
 					</div>
 
-                    <div class="bt1 p10">
+                    <div class="p15">
 						<table class="params-headers-table f12 w" id="params-table">
 							<thead>
 							   <tr>
@@ -263,33 +285,42 @@
 
                 <!--response-->
 				<!--response-title-->
-                <div class="bb1 h30 mt10 shadow-b pl10 C555 mb10">
+                <div class="h30 mt10 shadow-b pl10 C555 mb10">
                     <div class="mt10 f14 tl w">
-						<div class="response-title menu-title bb2" data-stage="response-body" data-i18n="right.responseBody">响应主体</div>
-						<div class="response-title menu-title" data-stage="response-header" data-i18n="right.responseHeader">响应头</div>
-						<div class="response-title menu-title" data-stage="response-cookie" data-i18n="right.responseCookie">Cookie</div>
+						<div class="response-title menu-title bb2" data-stage="response-body">
+							<i class="iconfont color-main">&#xe606;</i>&nbsp;
+							<span data-i18n="right.responseBody">响应体</span>
+						</div>
+						<div class="response-title menu-title" data-stage="response-header">
+							<i class="iconfont color-main">&#xeedf;</i>&nbsp;
+							<span data-i18n="right.responseHeader">响应头</span>
+						</div>
+						<div class="response-title menu-title" data-stage="response-cookie">
+							<i class="iconfont color-main">&#xea45;</i>&nbsp;
+							<span data-i18n="right.responseCookie">Cookie</span>
+						</div>
 						<div class="cb"></div>
 					</div>
                 </div>
 
 				<!--response-menu-->
-				<div class="response-body p10 pb0 pt0">
-					<div class="btn-group" role="group">
-						<button type="button" class="response-menu btn btn-default btn-xs" id="format-row" data-i18n="json.row">原始返回</button>
-						<button type="button" class="response-menu btn btn-default btn-xs" id="format-pretty" data-i18n="json.pretty">格式化</button>
+				<div class="response-body p10 pb0 pt0 fw-300">
+					<div class="btn-group fw-300 f12" role="group">
+						<button type="button" class="response-menu btn btn-default btn-xs fw-300" id="format-row" data-i18n="json.row">原始返回</button>
+						<button type="button" class="response-menu btn btn-default btn-xs fw-300" id="format-pretty" data-i18n="json.pretty">格式化</button>
 					</div>
-					&nbsp;&nbsp;&nbsp;&nbsp;Json:
-					<div class="btn-group" role="group">
-						<button type="button" class="response-menu response-json btn btn-default btn-xs" id="json-expand" crap-data-name="expand" crap-data-value="1" data-i18n="json.expand">全部展开</button>
-						<button type="button" class="response-menu response-json btn btn-default btn-xs" crap-data-name="collapse" crap-data-value="1" data-i18n="json.collapseOne">展开一级</button>
-						<button type="button" class="response-menu response-json btn btn-default btn-xs" crap-data-name="collapse" crap-data-value="2" data-i18n="json.collapseTwo">展开二级</button>
-						<button type="button" class="response-menu response-json btn btn-default btn-xs" crap-data-name="collapse" crap-data-value="3" data-i18n="json.collapseThree">展开三级</button>
-						<button type="button" class="response-menu response-json btn btn-default btn-xs" crap-data-name="collapse" crap-data-value="4" data-i18n="json.collapseFour">展开四级</button>
-						<button type="button" class="response-menu response-json btn btn-default btn-xs" crap-data-name="nl2br" crap-data-value="true" data-i18n="json.nl2br">自动换行</button>
+					&nbsp;&nbsp;&nbsp;&nbsp;JSON:
+					<div class="btn-group fw-300 f12" role="group">
+						<button type="button" class="response-menu response-json btn btn-default btn-xs fw-300" id="json-expand" crap-data-name="expand" crap-data-value="1" data-i18n="json.expand">全部展开</button>
+						<button type="button" class="response-menu response-json btn btn-default btn-xs fw-300" crap-data-name="collapse" crap-data-value="1" data-i18n="json.collapseOne">展开一级</button>
+						<button type="button" class="response-menu response-json btn btn-default btn-xs fw-300" crap-data-name="collapse" crap-data-value="2" data-i18n="json.collapseTwo">展开二级</button>
+						<button type="button" class="response-menu response-json btn btn-default btn-xs fw-300" crap-data-name="collapse" crap-data-value="3" data-i18n="json.collapseThree">展开三级</button>
+						<button type="button" class="response-menu response-json btn btn-default btn-xs fw-300" crap-data-name="collapse" crap-data-value="4" data-i18n="json.collapseFour">展开四级</button>
+						<button type="button" class="response-menu response-json btn btn-default btn-xs fw-300" crap-data-name="nl2br" crap-data-value="true" data-i18n="json.nl2br">自动换行</button>
 					</div>
 
-					<a class="btn btn-default btn-xs" target="_blank" href="http://api.crap.cn/static/help/155037909955501000049.html">
-						<i class="iconfont mr5">&#xe6a3; </i><span data-i18n="help">帮助文档</span>
+					<a class="btn btn-default btn-xs fw-300" target="_blank" data-i18n="[href]jsonToolDocUrl">
+						<i class="iconfont mr5 fw-300">&#xe6a3; </i><span data-i18n="help">帮助文档</span>
 					</a>
 				</div>
 				<!--response-menu:end-->
@@ -301,30 +332,35 @@
 						<textarea id="response-row" class="form-control w h BGFFF min-h400 hidden" placeholder="Hit the Send buttom to get a response"></textarea>
 
 						<!--pretty-->
-						<div id="response-pretty" class="b1 r5 p10 BGFFF min-h400">
-							<div class="tc mt100 C999">
-								<i class="iconfont mr5 f16">&#xe634;</i>
+						<div id="response-pretty" class="b1 p10 BGFFF min-h400">
+							<div class="tc mt100 CAAA f16 fw-300">
 								<span data-i18n="response.responseTip">请点击发送请求按钮测试接口</span>
-							</div>
-							<div class="tc C999">
-								<a class="cursor C999" target="_blank" href="http://api.crap.cn/static/help/155037970568801000060.html">
-									<i class="iconfont mr5">&#xe6a3;</i>
-									<span data-i18n="response.responseHelp">点击查看帮助文档 ~</span>
+								<a class="cursor C999 no_unl" target="_blank"  data-i18n="[href]helperDocUrl" href="http://api.crap.cn/static/help/155037970568801000060.html">
+									<span data-i18n="response.responseHelp">帮助</span>
 								</a>
+							</div>
+							<div class="tc mt20">
+								<span class="BGEEE w200 h20 dis-in-blo mr10">   </span>
+								<span class="bg-main w100 h20 dis-in-blo mr10">   </span>
+								<span class="BGEEE w50 h20 dis-in-blo mr10">   </span>
+							</div>
+							<div class="tc mt10">
+								<span class="BGEEE w200 h20 dis-in-blo mr10">   </span>
+								<span class="BGEEE w50 h20 dis-in-blo mr10">   </span>
 							</div>
 						</div>
 					</div>
 
 					<!--header-->
-					<div class="response-header b1 r5 p10 min-h400 none BGFFF">
-						<div class="fb">General</div>
+					<div class="response-header b1 p10 min-h400 none BGFFF">
+						<div class="fw-300">General:</div>
 						<div class="ml20 general"></div>
-						<div class="fb mt20">Response Headers</div>
+						<div class="fw-300 mt20">Response Headers:</div>
 						<div class="ml20 headers"></div>
 					</div>
 
 					<!--cookie-->
-					<div class="response-cookie b1 r5 p10 min-h400 none BGFFF">
+					<div class="response-cookie b1 p10 min-h400 none BGFFF">
 						<table class="table"></table>
 					</div>
                 </div>
@@ -333,6 +369,7 @@
 	</div>
 	
 	<div id="float" class="folat">
+		<div class="tc CFFF f20 fb" id="id-timing"></div>
 		<div class="sk-wave">
 			<div class="sk-rect sk-rect1"></div>
 			<div class="sk-rect sk-rect2"></div>
@@ -399,15 +436,25 @@
 		<i class="iconfont i-close CFFF fb f16 close-dialog" crap-data="dialog2">&#xe69a;</i>
 	</div>
 
+	<div id="iframe-dialog" class="look-up shadow p0 of-h">
+		<div id="id-iframe-dialog-title" class="CFFF f16 shadow" style="line-height:40px;padding-left:20px; height:40px; background-color:#233050;"></div>
+		<div class="look-up-content b0 f12 tl p0 m0 of-h">
+			<iframe id="iframe-dialog-iframe" class="w h b0 m0"></iframe>
+		</div>
+		<i class="iconfont i-close CFFF fb f16 close-dialog" id="iframe-dialog-close" crap-data="iframe-dialog">&#xe69a;</i>
+	</div>
+
 	<script src="source/constant.js"></script>
 	<script src="source/tools/jquery-1.9.1.min.js"></script>
 	<script src="source/tools/i18next-1.11.2.min.js"></script>
 	<script src="source/tools/bootstrap.js"></script>
 	<script src="source/base-dao.js"></script>
 	<script src="source/interface-dao.js"></script>
+	<script src="source/env-dao.js"></script>
 	<script src="source/module-dao.js"></script>
 	<script src="source/plug-function.js"></script>
 	<script src="source/crapApi.js"></script>
+	<script src="source/env.js"></script>
 	<script src="source/tools/jquery.jsonview.js"></script>
 	<script src="source/json.js"></script>
 	<script type="text/javascript" src="source/tools/jquery-ui.min.js"></script>

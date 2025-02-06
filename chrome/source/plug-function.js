@@ -1,3 +1,75 @@
+function syncProject() {
+    $("#float").fadeIn(300);
+
+    var projectUniKey = getCurrentProjectUniKey();
+    var modules = getLocJsonData(CRAP_DEBUG_MODULES + projectUniKey, EMPTY_ARRAY);
+
+    for(var i=0 ; i<modules.length; i++){
+        var debugs = getLocJsonData('crap-debug-interface-' + modules[i].moduleId, EMPTY_ARRAY);
+        modules[i].debugs = debugs;
+    }
+
+    $.ajax({
+        type : "POST",
+        url : getWebSiteUrl() + "/user/crapDebug/v1/synch.do?projectUniKey=" + projectUniKey + "&plugVersion=" + PLUG_VERSION + "&defProjectName=" + getText(l_defDebugName),
+        async : true,
+        data : JSON.stringify(modules),
+        beforeSend: function(request) {
+            request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        },
+        complete: function(responseData, textStatus){
+            if(textStatus == "error"){
+                alert("Status:" + responseData.status + "\nStatusText:" + responseData.statusText +"\nTextStatus: " + textStatus);
+            }
+            else if(textStatus == "success"){
+                var responseJson = $.parseJSON(responseData.responseText);
+                if( responseJson.success == 1){
+                    // 删除提交的项目：项目为空，但是返回的不为空，是默认项目
+                    var data = responseJson.data;
+
+                    clearLocalStorage(projectUniKey);
+                    // 清除返回的项目
+                    clearLocalStorage(data.projectUniKey);
+
+                    setCurrentProjectUniKey(data.projectUniKey, data.projectName, data.projectCover);
+                    var moduleList =  data.moduleList;
+                    // 存储服务器同步的数据
+                    console.log("模块总数：" + moduleList.length);
+
+                    for(var i=moduleList.length-1;i>=0; i--){
+                        var resModule = moduleList[i];
+
+                        console.log("处理模块：" + i + "（" + resModule.moduleName + "），状态：" + resModule.status);
+                        if(resModule.status == -1){
+                            continue;
+                        }
+
+                        saveModule(resModule.moduleName, resModule.moduleUniKey, resModule.version, resModule.status);
+
+                        var debugs = resModule.debugs;
+                        console.log("处理模块接口：" + i + "，" + resModule.moduleName + "，接口数量：" + debugs.length);
+
+                        for(var j=debugs.length-1;j>=0;j--){
+                            saveInterfaceDetail(debugs[j].moduleUniKey, debugs[j].paramType, debugs[j].uniKey,
+                                debugs[j].name, debugs[j].method, debugs[j].url, debugs[j].params,
+                                debugs[j].headers, debugs[j].version, debugs[j].status,
+                                debugs[j].webProjectId, debugs[j].webModuleId, debugs[j].webId);
+                        }
+                    }
+
+                    getLocalModules();
+                    alert(getText(l_successTip),3,"success");
+                    refreshSyncIco(1);
+                }else{
+                    alert(responseJson.error.message,5,"error");
+                }
+            }else{
+                alert("Status:" + responseData.status + "\nStatusText:" + responseData.statusText +"\nTextStatus: " + textStatus);
+            }
+            $("#float").fadeOut(300);
+        }
+    });
+}
 /***************** 系统设置 *****************/
 function setSetting(name, value, _this){
     // 超时时间校验
@@ -5,6 +77,14 @@ function setSetting(name, value, _this){
         var httpTimeout = parseFloat(value);
         if (httpTimeout.toString() == "NaN" || httpTimeout < 1000) {
             _this.text(getText(l_timeoutFormatErrorTip));
+            return;
+        }
+    }
+
+    if (name == MENU_WIDTH){
+        var menuWidth = parseFloat(value);
+        if (menuWidth.toString() == "NaN" || menuWidth < 18 || menuWidth > 50) {
+            _this.text(getText(l_menuWidthErrorTip));
             return;
         }
     }
@@ -19,21 +99,21 @@ function setSetting(name, value, _this){
     _this.text(getText(l_updateSuccessTip));
 }
 
+// 删除模块、接口
+function clearLocalStorage(projectUniKey) {
+    var modules = getLocJsonData(CRAP_DEBUG_MODULES + projectUniKey, "[]");
 
-function clearLocalStorage() {
-    var webSiteUrl = getWebSiteUrl();
-    var httpTimeout = getHttpTimeout();
-    var language = getLanguage();
-    localStorage.clear();
-    localStorage[WEB_HTTP_TIMEOUT] = httpTimeout;
-    localStorage[SETTING_LANGUAGE] = language;
-    localStorage[WEB_SITE_URL] = webSiteUrl;
+    for(var i=0 ; i<modules.length; i++){
+        var moduleId = modules[i].moduleId;
+        localStorage.removeItem('crap-debug-interface-' + moduleId);
+    }
+    localStorage.removeItem(CRAP_DEBUG_MODULES + projectUniKey);
 }
 
 /************* 插件广告 ****************/
 function getAdvertisement() {
     try {
-        var result = httpPost(ADVERTISEMENT, null, getAdvertisementCallback, null);
+        var result = httpPost(ADVERTISEMENT, true, getAdvertisementCallback, null);
     }catch (e){
         console.error(e);
     }
@@ -92,17 +172,18 @@ function prop(id) {
 }
 
 /********* http *******/
-function httpPost(url, myAsync, callBack, callBackParams){
+function httpPost(url, myAsync, callBack, callBackParams, timeOut){
     if (url.indexOf("https://") != 0 && url.indexOf("http://") != 0){
         url = getWebSiteUrl() + url;
     }
+
     var result;
     $.ajax({
         type: "POST",
         url: url,
         async: myAsync,
         data: true,
-        timeout: 2000,
+        timeout: timeOut ? timeOut : 3000,
         beforeSend: function (request) {
             // 通过body传递参数时后需要设置
             //request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
@@ -116,10 +197,19 @@ function httpPost(url, myAsync, callBack, callBackParams){
                 }
             } else if (textStatus == "timeout") {
                 result = $.parseJSON("{\"success\":0,\"data\":null,\"error\":{\"code\":\"" + getText(l_netErrorTip) + "\",\"message\":\"timeout\"}}")
+                if (callBack) {
+                    responseJson = {};
+                    responseJson.data = result;
+                    callBack(responseJson, callBackParams);
+                }
             }
-
             else {
                 result = $.parseJSON("{\"success\":0,\"data\":null,\"error\":{\"code\":\"" + getText(l_unknownErrorTip) + "\",\"message\":\"" + getText(l_unknownErrorTip) +"\"}}")
+                if (callBack) {
+                    responseJson = {};
+                    responseJson.data = result;
+                    callBack(responseJson, callBackParams);
+                }
             }
         }
     });
@@ -152,7 +242,7 @@ moduleDiv += "           </div>";
 moduleDiv += "       </div>";
 moduleDiv += "   </div>";
 
-var interfaceDiv = "<div crap-data='ca_interfaceInfo' class='interface pl30 pr20 rel' title='ca_name'>";
+var interfaceDiv = "<div crap-data=\"ca_interfaceInfo\" class='interface pl20 pr20 rel' title='ca_name'>";
 interfaceDiv += "		<i class='iconfont ca_method'>ca_methodIcon</i>&nbsp;&nbsp;ca_name";
 interfaceDiv += "		<span class='more'>";
 interfaceDiv += "			<i class='iconfont fr'>&#xe75f;</i>";
@@ -197,6 +287,10 @@ function changeBg(removeClass, addClass, selectClass,click_button){
     $(click_button).addClass(addClass);
 }
 
+function hasClass(divId, cla) {
+    return !($("#" + divId).hasClass(cla) == false);
+}
+
 function responseShow(showDiv){
     if( showDiv == "response-row"){
         if( $("#response-row").hasClass("hidden")){
@@ -223,7 +317,7 @@ function getHeadersStr(){
         try {
             if(val.getAttribute("data-stage") == "value"){
                 if(key.trim() != "" || val.value.trim() != ""){
-                    headers += "&"+key + "=" + val.value
+                    headers += "&"+key + "=" + encodeURIComponent(val.value);
                 }
             }else if(val.getAttribute("data-stage") == "key"){
                 key = val.value;
@@ -235,7 +329,7 @@ function getHeadersStr(){
     return headers;
 }
 
-function getHeaders(request){
+function beforeSendHandleHeaders(request){
     if( $("#method").val() != "GET") {
         request.setRequestHeader("Content-Type", $('input:radio[name="param-type"]:checked').val());
     }
@@ -246,7 +340,16 @@ function getHeaders(request){
     $.each(texts, function(i, val) {
         try {
             if(val.getAttribute("data-stage") == "value"){
-                request.setRequestHeader(key, val.value);
+                var value = val.value;
+                var varList = getAllVar(getCurrentEnvId())
+                for(var i = 0 ; i< varList.length; i++){
+                    var variable = varList[i];
+                    value = value.replace(new RegExp("\\{\\{" + variable.key + "\\}\\}", "g"), variable.value);
+                    value = value.replace(new RegExp("%7B%7B" + variable.key + "%7D%7D", "g"), variable.value);
+                    key = key.replace(new RegExp("\\{\\{" + variable.key + "\\}\\}", "g"), variable.value);
+                    key = key.replace(new RegExp("%7B%7B" + variable.key + "%7D%7D", "g"), variable.value);
+                }
+                request.setRequestHeader(key, value);
             }else if(val.getAttribute("data-stage") == "key"){
                 key = val.value;
             }
@@ -261,62 +364,101 @@ function getParams(){
     var data = "";
     // 获取所有文本框
     var key = "";
-
+    var autoFix = getAutoFix();
     $.each(texts, function(i, val) {
         try {
             if(val.getAttribute("data-stage")  == "value"){
                 if( key != "") {
-                    data += "&" + key + "=" + encodeURIComponent(val.value);
+                    var value = val.value;
+                    if (autoFix) {value = value.trim()};
+                    data += "&" + key + "=" + encodeURIComponent(value);
                 }
-            }else if(val.getAttribute("data-stage")  == "key"){
+            } else if(val.getAttribute("data-stage")  == "key"){
                 key = val.value;
+                if (autoFix) {key = key.trim()};
             }
         } catch (ex) {
-            console.warn(e);
+            console.warn(ex);
             alert(ex);
         }
     });
+    if (data != ''){
+        data = data.substr(1);
+    }
     return data;
 }
 
 var originalResponseText = "";
 function callAjax() {
-    if ($("#url").val().trim() == ''){
+    var originUrl = $("#url").val().trim();
+    if (originUrl == ''){
         $("#response-row").val(getText(l_urlIsNullTip));
         $("#format-row").click();
         return;
     }
+
+    if(getAutoFix() && originUrl.indexOf("http://") != 0 && originUrl.indexOf("https://") != 0 ) {
+        originUrl = "http://" + originUrl;
+    }
+
+    setValue("url", originUrl);
+
     originalResponseText = "";
-    var url = $("#url").val().trim().split("?")[0] + "?";
+    var url = originUrl;
     var method = $("#method").val();
-    var urlParamsStr = "";
     var params =  getParams();
+    var customerParam = ($.inArray($('input:radio[name="param-type"]:checked').val(), customerTypes) != -1);
+    if(customerParam) {
+        params = $("#customer-value").val();
+    } else {
+        // 表单参数优先url参数
+        if( originUrl.indexOf("?") > 0){
+            url = originUrl.split("?")[0] + "?";
+            var urlParams = originUrl.split("?")[1].split("&");
 
-
-    // 表单参数优先url参数
-    if( $("#url").val().indexOf("?") > 0){
-        urlParamsStr = $("#url").val().split("?")[1];
-        var urlParams = urlParamsStr.split("&");
-        for(var i=0; i<urlParams.length; i++ ){
-            if( urlParams[i] != "" && urlParams[i].indexOf("=") > 0){
-                if(params.indexOf("&" + urlParams[i].split("=")[0]) < 0){
-                    url += "&" + urlParams[i];
+            for(var i=0; i<urlParams.length; i++ ){
+                if( urlParams[i] != "" && urlParams[i].indexOf("=") > 0){
+                    // 参数中不存在，则使用url中的
+                    if(("&" + params).indexOf("&" + urlParams[i].split("=")[0] + "=") < 0){
+                        url += urlParams[i] + "&";
+                    }
+                } else {
+                    url += urlParams[i] + "&";
                 }
             }
+
+            url = url.substr(0, url.length - 1);
         }
     }
-    if(  $.inArray($('input:radio[name="param-type"]:checked').val(), customerTypes) == -1) {
-        params = (params.length > 0 ? params.substr(1) : params);
-    }else{
-        params = $("#customer-value").val();
+
+    // 变量
+    // "signType=tm_cn&storeId=%7B%7BstoreId%7D%7D&from=xlsgzt"
+    var varList = getAllVar(getCurrentEnvId())
+    for(var i = 0 ; i< varList.length; i++){
+        var variable = varList[i];
+        url = url.replace(new RegExp("\\{\\{" + variable.key + "\\}\\}", "g"), variable.value);
+        url = url.replace(new RegExp("%7B%7B" + variable.key + "%7D%7D", "g"), variable.value);
+
+        params = params.replace(new RegExp("\\{\\{" + variable.key + "\\}\\}", "g"), variable.value);
+        params = params.replace(new RegExp("%7B%7B" + variable.key + "%7D%7D", "g"), variable.value);
     }
 
-    url = url.replace("?&", '?');
-    if( url.endWith("?")){
-        url = url.substr(0 - url.length-1);
-    }
-    var httpTimeout = getHttpTimeout();
     $("#float").fadeIn(300);
+
+    var httpTimeout = getHttpTimeout();
+    var timingTime = httpTimeout;
+
+    // 倒计时提示
+    setHtml("id-timing",(httpTimeout/1000) + ' s');
+    var setTime = setInterval(function(){
+        timingTime = timingTime - 1000;
+        if (timingTime <= 0 && timingTime <= 0) {
+            setHtml("id-timing", "")
+            clearInterval(setTime);  //清除定时器
+        }
+        setHtml("id-timing",(timingTime/1000) + ' s')
+    },1000);
+
     $.ajax({
         type : method,
         url : url,
@@ -324,7 +466,7 @@ function callAjax() {
         data : params,
         timeout: httpTimeout,
         beforeSend: function(request) {
-            getHeaders(request);
+            beforeSendHandleHeaders(request);
             $("#response-row").val("");
             $(".response-header .headers").html("");
             $(".response-header .general").html("");
@@ -377,22 +519,12 @@ function callAjax() {
                 $("#response-row").val("textStatus: " + textStatus +"\n\n" + getText(l_connectingError) + url);
                 $("#format-row").click();
             }
+            clearInterval(setTime);  //清除定时器
+            setHtml("id-timing", "");
             $("#float").fadeOut(300);
         }
     });
-    if(url.indexOf("?") < 0){
-        url += "?";
-    }
-    if( method == "GET"){
-        if(params.trim() == ""){
-            if(url.endWith("?") || url.endWith("&") ){
-                url = url.substr(0, url.length-1);
-            }
-        }else{
-            url = (url +"&"+ params).replace("&&", '&').replace("?&", '?');
-        }
-        $("#url").val(url);
-    }
+
 
     // 记录历史
     try{
@@ -402,12 +534,9 @@ function callAjax() {
         }catch(e){
             historys = $.parseJSON( "[]" );
         }
-        if(  $.inArray($('input:radio[name="param-type"]:checked').val(), customerTypes) == -1) {
-            params = params.replace(/=/g, ":").replace(/&/g,"\n");
-        }
 
-        if( url.endWith("?")){
-            url = url.substr(0, url.length-1);
+        if( !customerParam) {
+            params = params.replace(/=/g, ":").replace(/&/g,"\n");
         }
 
         var h  ={"paramType": $("input[name='param-type']:checked").val(), "name": $("#interface-name").val(),"method":method, "url" : url,
@@ -440,62 +569,75 @@ function getRootDomain(url) {
 }
 
 // 数据存储
-function getHistorys(){
-    var historys;
-    try{
-        historys = $.parseJSON( localStorage['crap-debug-history'] );
-    }catch(e){
-        historys = $.parseJSON( "[]" );
-        console.warn(e);
-    }
+function searchHistorys(key){
+    var historys = getLocJsonData("crap-debug-history", "[]");
     var historysText = "";
     for(var i=0 ; i<historys.length; i++){
+        var historyStr = JSON.stringify(historys[i]);
         var title =  historys[i].name;
         if( handerStr(title) == ""){
             title = handerStr(historys[i].url);
         }
-        historysText += "<div class='history-div' crap-data='"+JSON.stringify(historys[i])+"'>" + title +"</div>";
+
+        if (key != null && key !='' && historyStr.indexOf(key) < 0){
+            continue;
+        }
+
+        historysText += "<div class='history-div' crap-data=\""+ encodeURIComponent(historyStr) + "\">" + title +"</div>";
     }
     $("#historys").html(historysText);
 }
+
 // 数据存储
-function getLocalModules(){
+function getHistorys(){
+    searchHistorys(null)
+}
+
+function getLocalModules() {
+    searchLocalModules(null);
+}
+// 数据存储
+function searchLocalModules(key){
     // 模块对应的项目ID为 用户ID + "-debug"该项目模块下只有接口调试记录，可以共享，一个用户有且仅有一个调试目录
     var modules;
+    var projectUniKey = getCurrentProjectUniKey();
     try{
-        modules = $.parseJSON( localStorage['crap-debug-modules'] )
+        modules = $.parseJSON( localStorage[CRAP_DEBUG_MODULES + projectUniKey] )
     }catch(e){
         modules = $.parseJSON( "[]" );
         console.warn(e);
     }
     var moduleText = "";
     for(var i=0 ; i<modules.length; i++){
-        if(modules[i].status == -1){
+        var module = modules[i];
+        if(module.status == -1){
             continue;
         }
-        var moduleName =  modules[i].moduleName;
-        var moduleId = modules[i].moduleId;
+
+        var moduleName = module.moduleName;
+        var moduleId = module.moduleId;
 
         // 第一个文件夹默认打开
         moduleText += moduleDiv.replace(/ca_moduleId/g,moduleId).replace(/ca_moduleName/g,moduleName);
 
-        var interfaces;
-        try{
-            interfaces = $.parseJSON( localStorage['crap-debug-interface-' + moduleId] );
-        }catch(e){
-            interfaces = $.parseJSON( "[]" );
-            console.warn(e);
-        }
+        var interfaces = getLocJsonData('crap-debug-interface-' + moduleId, "[]")
+
         var interfaceText = "";
         for(var j=0; j<interfaces.length; j++){
             if(interfaces[j].status == -1){
                 continue;
             }
-             interfaceText += interfaceDiv.replace(/ca_interfaceInfo/g,JSON.stringify(interfaces[j]))
+
+            var interfaceStr = JSON.stringify(interfaces[j]);
+            if (key != null && key !='' && interfaceStr.indexOf(key) < 0){
+                continue;
+            }
+
+             interfaceText += interfaceDiv.replace(/ca_interfaceInfo/g,encodeURIComponent(interfaceStr))
 								.replace(/ca_name/g,interfaces[j].name)
 								.replace(/ca_id/g,interfaces[j].id)
 								.replace(/ca_moduleId/g,interfaces[j].moduleId);
-								
+
              if (interfaces[j].method == "GET"){
                  interfaceText = interfaceText.replace("ca_methodIcon","&#xe645;");
                  interfaceText = interfaceText.replace("ca_method","GET");
@@ -539,7 +681,7 @@ function deleteInterface(moduleId, id) {
 function deleteModule(moduleId) {
     var modules;
     try{
-        modules = $.parseJSON( localStorage['crap-debug-modules'] )
+        modules = $.parseJSON( localStorage[CRAP_DEBUG_MODULES + getCurrentProjectUniKey()] )
     }catch(e){
         modules = $.parseJSON( "[]" );
         console.warn(e);
@@ -552,7 +694,7 @@ function deleteModule(moduleId) {
             break;
         }
     }
-    localStorage['crap-debug-modules'] = JSON.stringify(modules);
+    localStorage[CRAP_DEBUG_MODULES + getCurrentProjectUniKey()] = JSON.stringify(modules);
     refreshSyncIco(0);
     return true;
 }
@@ -561,13 +703,12 @@ function deleteModule(moduleId) {
 function renameModule(moduleId,moduleName) {
     var modules;
     try{
-        modules = $.parseJSON( localStorage['crap-debug-modules'] )
+        modules = $.parseJSON( localStorage[CRAP_DEBUG_MODULES + getCurrentProjectUniKey()] )
     }catch(e){
         modules = $.parseJSON( "[]" );
         console.warn(e);
     }
 
-    // 如果已经存在则删除
     for(var i=0; i<modules.length;i++){
         if(modules[i].moduleId == moduleId){
             modules[i].moduleName = moduleName;
@@ -575,14 +716,14 @@ function renameModule(moduleId,moduleName) {
             break;
         }
     }
-    localStorage['crap-debug-modules'] = JSON.stringify(modules);
+    localStorage[CRAP_DEBUG_MODULES + getCurrentProjectUniKey()] = JSON.stringify(modules);
     refreshSyncIco(0);
     return true;
 }
 function saveModule(moduleName, moduleId,version,status) {
     var modules;
     try {
-        var localModules = localStorage['crap-debug-modules'];
+        var localModules = localStorage[CRAP_DEBUG_MODULES + getCurrentProjectUniKey()];
         if (localModules == null){
             localModules = "[]";
         }
@@ -602,11 +743,11 @@ function saveModule(moduleName, moduleId,version,status) {
     }
     var m = {"moduleName": moduleName, "moduleId": moduleId,"version": version,"status":status};
     modules.unshift(m);
-    localStorage['crap-debug-modules'] = JSON.stringify(modules);
+    localStorage[CRAP_DEBUG_MODULES + getCurrentProjectUniKey()] = JSON.stringify(modules);
     refreshSyncIco(0);
     return modules;
 }
-function saveInterfaceDetail(moduleId, paramType, id, name, method, url, params, headers,version,status) {
+function saveInterfaceDetail(moduleId, paramType, id, name, method, url, params, headers,version,status,webProjectId,webModuleId,webId) {
     var interfaces;
     try {
         var localInterfaces = localStorage['crap-debug-interface-' + moduleId];
@@ -629,7 +770,10 @@ function saveInterfaceDetail(moduleId, paramType, id, name, method, url, params,
         "params": params,
         "headers": headers,
         "version":version,
-        "status":status
+        "status":status,
+        "webProjectId" : webProjectId,
+        "webModuleId" : webModuleId,
+        "webId" : webId
     };
 
     // 如果已经存在则删除
@@ -638,6 +782,10 @@ function saveInterfaceDetail(moduleId, paramType, id, name, method, url, params,
             h.interfaceId = interfaces[i].interfaceId;
             h.status = interfaces[i].status;
             h.moduleId = interfaces[i].moduleId;
+            h.webProjectId  = interfaces[i].webProjectId;
+            h.webModuleId  = interfaces[i].webModuleId;
+            h.webId  = interfaces[i].webId;
+
             if(version == 0) {
                 h.version = interfaces[i].version + 1;
             }
@@ -659,16 +807,28 @@ function saveInterface(moduleId, saveAs) {
         alert(getText(l_interfaceNameIsNullTip));
         return false;
     }
-    // if moduleId is null,then create a new moduleId, but moduleNmae must be input
+
+    // if moduleId is null,then create a new moduleId, but moduleName must be input
     if( handerStr($("#save-module-id").val()) == "" && handerStr(moduleId) == ""){
-        moduleId = "ffff-"+new Date().getTime() + "-" + random(10);
         var moduleName = $("#save-module-name").val();
-        if( handerStr(moduleName) == ""){
-            alert(getText(l_moduleNameIsNullTip));
-            return;
+        var allModules = getAllModules();
+        for(var i=0; i< allModules.length;i++){
+            if(handerStr(allModules[i].moduleName) == handerStr(moduleName)){
+                moduleId = allModules[i].moduleId;
+                break;
+            }
         }
-        // save module
-        saveModule( moduleName, moduleId, 0, 1);
+
+        if (handerStr(moduleId) == ""){
+            moduleId = "ffff-"+new Date().getTime() + "-" + random(10);
+            if( handerStr(moduleName) == ""){
+                alert(getText(l_moduleNameIsNullTip));
+                return;
+            }
+            // save module
+            saveModule(moduleName, moduleId, 0, 1);
+        }
+
     }else{
         if( handerStr(moduleId) == "" ){
             moduleId = $("#save-module-id").val();
@@ -679,7 +839,7 @@ function saveInterface(moduleId, saveAs) {
     // if id is not null, but saveAs is true,meaning should create a new interface base on the current interface,so id should be created
     var id = $("#interface-id").val();
     if( handerStr(id) == "" || saveAs){
-        id = "ffff-"+new Date().getTime() + "-" + random(10);
+        id = new Date().getTime() + "-" + random(10);
     }
 
     var method = $("#method").val();
@@ -704,7 +864,7 @@ function saveInterface(moduleId, saveAs) {
 
     var name = $("#save-interface-name").val();
     var url = $("#url").val();
-    saveInterfaceDetail(moduleId, paramType, id, name, method, url, params, headers, 0, 1);
+    saveInterfaceDetail(moduleId, paramType, id, name, method, url, params, headers, 0, 1, null, null, null);
     closeMyDialog("dialog");
     getLocalModules();
     return true;
@@ -715,7 +875,7 @@ function intitSaveInterfaceDialog(){
     // 循环获取所有module
     var modules;
     try{
-        modules = $.parseJSON( localStorage['crap-debug-modules'] )
+        modules = $.parseJSON( localStorage[CRAP_DEBUG_MODULES + getCurrentProjectUniKey()] )
     }catch(e){
         modules = $.parseJSON( "[]" );
         console.warn(e);
@@ -961,5 +1121,68 @@ function refreshSyncIco(isSync){
         $("#synch-ico").addClass("GET");
     }else if(value == "false"){
         $("#synch-ico").addClass("POST");
+    }
+}
+
+function applyPermission() {
+    try {
+        chrome.permissions.contains({
+                "permissions": ["cookies"],
+                "origins": ["http://*/*", "https://*/*"]
+            }, function (result) {
+                if (!result) {
+                    chrome.permissions.request({
+                        "permissions": ["cookies"],
+                        "origins": ["http://*/*", "https://*/*"]
+                    }, function (granted) {
+                        if (!granted) {
+                            alert(getText(l_applyPermission), 5, "error", 500);
+                            return;
+                        }
+                    });
+                }
+            }
+        );
+    } catch (e){}
+}
+
+function getBrowserUrlCallBack(tabs) {
+    if (tabs[0].url){
+        var qrValue = tabs[0].url;
+        setValue("qr-tool-text", qrValue);
+        setTimeout(function () {
+            new QRCode(document.getElementById("qr-tool-img"), qrValue);
+        }, 20);
+    } else {
+        setValue("qr-tool-text", getText(l_getBrowserUrlFail));
+    }
+}
+
+function getQrHref(tabs) {
+    try {
+        if (tabs[0].url){
+            var qrValue = tabs[0].url;
+            var qrHistory = getLocData(QR_HISTORY);
+            if (qrHistory && qrHistory.length > 0){
+                qrValue = qrHistory;
+            }
+
+            setValue("qr-tool-text", qrValue);
+            setTimeout(function () {
+                new QRCode(document.getElementById("qr-tool-img"), qrValue);
+            }, 20);
+        } else {
+            var qrValue = "http://api.crap.cn";
+            var qrHistory = getLocData(QR_HISTORY);
+            if (qrHistory && qrHistory.length > 0){
+                qrValue = qrHistory;
+            }
+            setValue("qr-tool-text", qrValue);
+            new QRCode(document.getElementById("qr-tool-img"), qrValue);
+        }
+
+    }catch (e){
+        setValue("qr-tool-text", "http://api.crap.cn");
+        new QRCode(document.getElementById("qr-tool-img"), "http://api.crap.cn");
     }
 }

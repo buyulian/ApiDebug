@@ -7,11 +7,21 @@ var CRAP_DATA_ENV_NAME = "crap-data-env-name";
 var ID_ENV_VARIABLE_TABLE = "env-variable-table";
 var ENV_LIST_MENU = "env-list-menu";
 var ID_EDIT_ENG_ID = "id-edit-env-id";
+var ID_INTERFACE_ENV_LIST = "id-interface-env-list";
+var ID_CURRENT_ENV_NAME = "id-current-env-name";
 
 var ENV_DIV = "<div class='env-list-menu' crap-data-env-id='ca_envId'> ca_envName ";
 ENV_DIV += "<div class='delete-env' crap-data-env-id='ca_envId'><i class='iconfont'>&#xe69d;</i></div>";
 ENV_DIV += "<div class='edit-env' crap-data-env-id='ca_envId' crap-data-env-name='ca_envName'><i class='iconfont'>&#xe69e;</i></div>";
 ENV_DIV += "</div>";
+
+var INTERFACE_ENV_DIV = "<li><a class='pl10 pr10 cursor pt5 pb5' crap-data-env-id='ca_envId' crap-data-env-name='ca_envName'>ca_envName</a></li>"
+
+var INTERFACE_ENV_MANAGER = "<li role='separator' class='divider pl10 pr10'></li> <li>";
+INTERFACE_ENV_MANAGER += "<a href='env.html' target='_blank' class='pl10 pr10'> ";
+INTERFACE_ENV_MANAGER +="<i class='iconfont color-adorn mt-3 pr5 f14'>&#xe604;</i>";
+INTERFACE_ENV_MANAGER +="<span>" + getText(l_manageEnvVariable) + "</span></a></li>";
+
 
 $(function(){
     drawEnvList();
@@ -82,6 +92,18 @@ $(function(){
         tr.remove();
     });
 
+    $("#" + ID_INTERFACE_ENV_LIST).on("click","a",function() {
+        if ($(this).attr(CRAP_DATA_ENV_ID) && $(this).attr(CRAP_DATA_ENV_NAME)){
+            saveLocData(DEF_ENV_ID,  $(this).attr(CRAP_DATA_ENV_ID));
+            saveLocData(DEF_ENV_NAME, $(this).attr(CRAP_DATA_ENV_NAME));
+            drawCurrentEnv();
+        }
+    });
+
+    $("#id-env-group").click(function(){
+        drawInterfaceEnvList();
+    });
+
     $("#id-save-env-var").click(function() {
         var texts = $("#" + ID_ENV_VARIABLE_TABLE + " input[type='text']");
         var key = "";
@@ -113,19 +135,19 @@ $(function(){
 
 function drawInterfaceEnvList() {
     var envList = getAllEnv();
-    var envText = "";
+    $("#" + ID_INTERFACE_ENV_LIST).html("");
     for(var i=0 ; i<envList.length; i++) {
-        if (envList[i].status == -1) {
-            continue;
-        }
-
         var name = envList[i].name;
         var id = envList[i].id;
-
-        // 第一个文件夹默认打开
-        envText += ENV_DIV.replace(/ca_envId/g, id).replace(/ca_envName/g, name);
+        $("#" + ID_INTERFACE_ENV_LIST).append(INTERFACE_ENV_DIV.replace(/ca_envId/g, id).replace(/ca_envName/g, name));
     }
-    setHtml(ID_ENV_LIST, envText);
+
+    if (envList.length == 0){
+        $("#" + ID_INTERFACE_ENV_LIST).append(INTERFACE_ENV_DIV.replace(/ca_envId/g, "noEnvVariable").replace(/ca_envName/g, getText(l_noEnvVariable)));
+    }
+
+    $("#" + ID_INTERFACE_ENV_LIST).append(INTERFACE_ENV_MANAGER);
+
 }
 
 function drawEnvList() {
@@ -135,11 +157,8 @@ function drawEnvList() {
         if (envList[i].status == -1) {
             continue;
         }
-
         var name = envList[i].name;
         var id = envList[i].id;
-
-        // 第一个文件夹默认打开
         envText += ENV_DIV.replace(/ca_envId/g, id).replace(/ca_envName/g, name);
     }
     setHtml(ID_ENV_LIST, envText);
@@ -161,6 +180,21 @@ function drawEnvVariable(envId) {
     }
     $("#" + ID_ENV_VARIABLE_TABLE + " tbody").append(paramsTr);
 }
+
+function getCurrentEnvId() {
+   return getLocData(DEF_ENV_ID);
+}
+
+function drawCurrentEnv() {
+    setHtml(ID_CURRENT_ENV_NAME, getLocDataDef(DEF_ENV_NAME, getText(l_envVariable)));
+}
+
+function drawNotice() {
+    if (getLocData(NOTICE_CLICK) == ""){
+        $("#" + ID_NOTICE).removeClass("ndis");
+    }
+}
+
 
 function drawEnvVariable(envId) {
     if(envId == null){

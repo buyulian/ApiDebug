@@ -1,10 +1,10 @@
 {
-  "appName": {
-    "message": "PostWoman 接口测试工具",
-    "description": "PostWoman 接口测试工具"
-  },
-  "appDesc": {
-    "message": "开发助手，http接口调试，post调试，post模拟.", 
-    "description":"开发助手，http接口调试，post调试，post模拟."
-  }
+   "appDesc": {
+      "description": "开源API接口调试工具，支持Restful接口、http、https接口调试、POST模拟，支持PUT、DELETE接口调试。支持切换语言，支持云端备份，相较于postman，Postwoman更符合中国用户习惯。",
+      "message": "开发助手，http接口调试，post调试，post模拟."
+   },
+   "appName": {
+      "description": "PostWoman Http接口调试插件",
+      "message": "PostWoman Http接口调试插件"
+   }
 }

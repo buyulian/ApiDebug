@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title data-i18n="head.title"></title>
+	<link href="source/base.css" rel="stylesheet" type="text/css" />
+	<link href="source/tools/bootstrap.css" rel="stylesheet" type="text/css" />
+	<link href="source/plug.css" rel="stylesheet" type="text/css" />
+	<link href="source/tools/jquery-ui.min.css" rel="stylesheet" type="text/css" />
+	<link href="source/tools/jquery.jsonview.css" rel="stylesheet" type="text/css" />
+</head>
+<body class="BGFFF">
+	<input id="id-page-name" type="hidden" value="changeProject">
+	<div class="w min-w900 p50 pt10 pb10">
+		<div class="row">
+			<div class="col-xs-6">
+				<div class="shadow-3 p20">
+					<div class="bl3 pl10 f16 fl" data-i18n="projectList"></div>
+					<a class="fr goHref cursor btn btn-xs btn-adorn" crap-href-new-page="true" crap-href="admin.do">
+						<i class="iconfont mr5 mt-1">&#xe6b9;</i>
+						<span data-i18n="createNewProject"></span>
+					</a>
+					<div class="cb"></div>
+                    <div id="id-project-list-content" class="mt10 lh30 h400 ofy-s pl10">
+						<span class="color-adorn p20" data-i18n="loadingTip"></span>
+					</div>
+					<div id="id-max-project-tip" class="bt1 p5 color-main"></div>
+					<button class="btn btn-main btn-sm fr mt10 w" id="id-change-project" data-i18n="submit">提交</button>
+					<div class="cb"></div>
+				</div>
+			</div>
+
+			<div class="col-xs-6">
+				<div class="shadow-3 p20">
+					<div class="bl3 pl10 f16" data-i18n="tip"></div>
+					<pre class="mt10 lh30" data-i18n="changeProjectTip"></pre>
+					<div class="cb"></div>
+
+					<div id="id-invite-user" class="ndis mt20">
+						<div class="bl3 pl10 f16 mt10">
+							<span data-i18n="inviteUser"></span>「<a id="id-invite-project-name" target="_blank" class="mt20 cursor"></a>」
+						</div>
+
+						<div data-i18n="inviteTip" class="mt20"></div>
+						<div id="id-invite-url" class="break-word mt20 C999"></div>
+					</div>
+
+					<div id="id-contract" class="ndis mt20">
+						<div class="bl3 pl10 f16 mt10" data-i18n="contractTip"></div>
+						<div class="fl w100">
+							<img src="source/image/wechat.jpg" class="w100 mt10"/>
+						</div>
+						<div class="fl p10"> postwoman.cn@gmail.cn</div>
+						<div class="cb"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<script src="source/constant.js"></script>
+	<script src="source/tools/jquery-1.9.1.min.js"></script>
+	<script src="source/tools/i18next-1.11.2.min.js"></script>
+	<script src="source/tools/bootstrap.js"></script>
+	<script src="source/base-dao.js"></script>
+	<script src="source/interface-dao.js"></script>
+	<script src="source/module-dao.js"></script>
+	<script src="source/plug-function.js"></script>
+	<script src="source/crapApi.js"></script>
+	<script src="source/json.js"></script>
+	<script type="text/javascript" src="source/tools/jquery-ui.min.js"></script>
+    <script src="source/changeProjectHtml.js"></script>
+
+</body>
+</html>

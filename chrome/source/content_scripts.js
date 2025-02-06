@@ -7,9 +7,9 @@ $(function(){
 			$(".modals").removeClass("out");
 			$(".modals").addClass("visible");
 			$(".modals").addClass("active");
-			
+
 			$(".project-donate-modal").removeClass("hidden");
-			
+
 			$(".modals").css("display","block");
 			$(".project-donate-modal").addClass("visible");
 			$(".project-donate-modal").addClass("active");

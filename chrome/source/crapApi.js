@@ -1,3 +1,4 @@
+var isLogin = false;
 $(function(){
     i18nInit();
     getLocalModules();
@@ -5,91 +6,54 @@ $(function(){
     //openMyDialog("title",500);
     var pageName = getValue("id-page-name")
     if (pageName == "debug"){
+        $("#left").width(getMenuWidth() + '%');
+        $("#right").width((100- getMenuWidth()) + '%');
+
         refreshSyncIco(-1);
         getLoginInfoDAO(drawLoginInfoDAO);
+
+        // 当前环境
+        drawCurrentEnv();
+        drawNotice();
+        drawCurrentProject();
+
+
         // getAdvertisement();
     } else if (pageName == "setting"){
         $("#" + WEB_SITE_URL).val(getWebSiteUrl());
         $("#" + WEB_HTTP_TIMEOUT).val(getHttpTimeout());
         $("#" + SETTING_LANGUAGE).val(getLanguage());
+        $("#" + MENU_WIDTH).val(getMenuWidth());
+        $("#" + AUTO_FIX).val(getAutoFix() + "");
+    } else if (pageName == "json"){
+        $("#response-row").focus();
     }
 
-    $("#synch").click(function(){
-        $("#float").fadeIn(300);
-        var modules;
-        try{
-            modules = $.parseJSON( localStorage['crap-debug-modules'] )
-        }catch(e){
-            modules = $.parseJSON( "[]" );
-            console.warn(e);
-        }
-        var moduleText = "[";
-        var separator = "";
-        for(var i=0 ; i<modules.length; i++){
-            moduleText += separator + "{\"status\":" + modules[i].status +",\"version\":" + modules[i].version +",\"moduleId\":\"" + modules[i].moduleId +"\",\"moduleName\":\"" + modules[i].moduleName + "\"";
-            var debugs;
-            try{
-                debugs = $.parseJSON( localStorage['crap-debug-interface-' + modules[i].moduleId] );
-            }catch(e){
-                debugs = $.parseJSON( "[]" );
-                console.warn(e);
-            }
-            moduleText += ",\"debugs\":" + JSON.stringify(debugs) +"}";
-            separator = ",";
-        }
-        moduleText = moduleText +"]";
-        $.ajax({
-            type : "POST",
-            url : getWebSiteUrl() + "/user/crapDebug/synch.do",
-            async : true,
-            data : moduleText,
-            beforeSend: function(request) {
-                request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-            },
-            complete: function(responseData, textStatus){
-                if(textStatus == "error"){
-                    alert("Status:" + responseData.status + "\nStatusText:" + responseData.statusText +"\nTextStatus: " + textStatus);
-                }
-                else if(textStatus == "success"){
-                    var responseJson = $.parseJSON(responseData.responseText);
-                    if( responseJson.success == 1){
-                        clearLocalStorage();
-                        responseJson = responseJson.data;
-                        // 存储服务器同步的数据
-                        console.log("模块总数：" + responseJson.length);
-
-                        for(var i=responseJson.length-1;i>=0; i--){
-                            var resModule = responseJson[i];
-
-                            console.log("处理模块：" + i + "（" + resModule.moduleName + "），状态：" + resModule.status);
-                            if(resModule.status == -1){
-                                continue;
-                            }
-
-                            saveModule(resModule.moduleName, resModule.moduleId, resModule.version, resModule.status);
-
-                            var debugs = resModule.debugs;
-                            console.log("处理模块接口：" + i + "，" + resModule.moduleName + "，接口数量：" + debugs.length);
-
-                            for(var j=debugs.length-1;j>=0;j--){
-                                saveInterfaceDetail(debugs[j].moduleId, debugs[j].paramType, debugs[j].id, debugs[j].name, debugs[j].method,
-                                    debugs[j].url, debugs[j].params, debugs[j].headers, debugs[j].version, debugs[j].status);
-                            }
-                        }
-
-                        getLocalModules();
-                        alert("success!",3,"success");
-                        refreshSyncIco(1);
-                    }else{
-                        alert(responseJson.error.message,5,"error");
-                    }
-                }else{
-                    alert("Status:" + responseData.status + "\nStatusText:" + responseData.statusText +"\nTextStatus: " + textStatus);
-                }
-                $("#float").fadeOut(300);
-            }
-        });
+    // 数据同步服务器
+    $("#synch").click(function() {
+        syncProject();
     });
+
+    $("#id-search").keyup(function(event){
+        if (event != null && event.keyCode != 13){
+            return;
+        }
+
+        var value = $.trim(getValue("id-search-text"));
+        if (hasClass("modules", "none")){
+            searchHistorys(value);
+        } else {
+            searchLocalModules(value);
+        }
+    });
+
+    $("#id-clear-search").click(function(){
+        setValue("id-search-text", "");
+        getLocalModules();
+    });
+
+
+
     $("#historys-title").click(function(){
         $("#historys").removeClass("none");
         $("#modules").addClass("none");
@@ -139,7 +103,7 @@ $(function(){
         if(!myConfirm(getText(l_clearLocalData))){
             return false;
         }
-        clearLocalStorage();
+        clearLocalStorage(getCurrentProjectUniKey());
         getLocalModules();
         $.ajax({
             type : "POST",
@@ -151,7 +115,7 @@ $(function(){
                     alert(getText(l_clearSuccessLogoutFail), 5, "error", 500);
                 }
                 else if(textStatus == "success"){
-                    alert(l_clearSuccessLogoutSuccess, 5, "success", 500);
+                    alert(getText(l_clearSuccessLogoutSuccess), 5, "success", 500);
                 }else{
                     alert(getText(l_clearSuccessLogoutFail), 5, "error", 500);
                 }
@@ -171,7 +135,7 @@ $(function(){
     });
 
     $("#modules").on("click",".interface", function() {
-        var urlInfo = $.parseJSON( $(this).attr("crap-data") );
+        var urlInfo = $.parseJSON( decodeURIComponent($(this).attr("crap-data")) );
         $("#url").val(urlInfo.url);
         $("#interface-id").val(urlInfo.id);
         $("#module-id").val(urlInfo.moduleId);
@@ -191,16 +155,29 @@ $(function(){
             $("#customer-type").val(urlInfo.paramType);
             $("#customer-type").change();
             $("#customer-value").val(urlInfo.params);
+            $("#headers-bulk-edit-div .key-value-edit").click();
         }
         $("input[name='param-type']").change();
 
         $(".interface").removeClass("bg-main");
         $(this).addClass("bg-main");
 
+        hiddenDiv(ID_WEB_EDIT_INTERFACE);
+        hiddenDiv(ID_WEB_VIEW_INTERFACE);
+        // 编辑、查看接口
+        if (urlInfo.webModuleId != null && urlInfo.webProjectId != null && urlInfo.webId != null){
+            setAttr(ID_WEB_EDIT_INTERFACE, ATTR_HREF_PARAMS, urlInfo.webProjectId + "|" + urlInfo.webId);
+            setAttr(ID_WEB_VIEW_INTERFACE, ATTR_HREF_PARAMS, urlInfo.webProjectId + "|" + urlInfo.webId);
+            showDiv(ID_WEB_EDIT_INTERFACE);
+            showDiv(ID_WEB_VIEW_INTERFACE);
+        }
     });
 
     $("#historys").on("click","div", function() {
-        var urlInfo = $.parseJSON( $(this).attr("crap-data") );
+        hiddenDiv(ID_WEB_EDIT_INTERFACE);
+        hiddenDiv(ID_WEB_VIEW_INTERFACE);
+
+        var urlInfo = $.parseJSON( decodeURIComponent($(this).attr("crap-data")) );
         $("#url").val(urlInfo.url);
         $("#interface-id").val("-1");
         $("#module-id").val("-1");
@@ -220,6 +197,7 @@ $(function(){
             $("#customer-type").val(urlInfo.paramType);
             $("#customer-type").change();
             $("#customer-value").val(urlInfo.params);
+            $("#headers-bulk-edit-div .key-value-edit").click();
         }
         $("input[name='param-type']").change();
 
@@ -229,6 +207,9 @@ $(function(){
     });
 
     $("#new-interface").click(function() {
+        hiddenDiv(ID_WEB_EDIT_INTERFACE);
+        hiddenDiv(ID_WEB_VIEW_INTERFACE);
+
         $("#interface-name").val("");
         $("#headers-bulk").val("");
         $("#params-bulk").val("");
@@ -317,29 +298,36 @@ $(function(){
         return false;// 不在传递至父容器
     });
 
-
-    $("#left-enlarge").click(function(){
-        if( !leftEnlarge){
-            leftEnlarge = true;
-            $("#left").css("width","18%");
-            $("#right").css("width","82%");
-            $("#left-enlarge i").html("&#xe6a7;");
-        }else{
-            leftEnlarge = false;
-            $("#left").css("width","0%");
-            $("#right").css("width","100%");
-            $("#left-enlarge i").html("&#xe697;");
-        }
-
-    });
 	$("#open-debug").click(function(){
 			window.open("debug.html")
 	});
+    $("#more-tools").click(function(){
+        window.open("moreTools.html")
+    });
     $("#open-json").click(function(){
         window.open("json.html")
     });
     $("#set-web-site").click(function(){
         window.open("setting.html")
+    });
+
+    $("#qr-tool").click(function(){
+       showDiv("qr-tool-div");
+       setHtml("qr-tool-img", "");
+       chrome.tabs.query({active:true, currentWindow:true},getQrHref);
+
+
+    });
+
+    $("#qr-tool-text").on("keydown keyup input", function (e) {
+        var url = getValue("qr-tool-text");
+        if (url != ""){
+            setHtml("qr-tool-img", "");
+            new QRCode(document.getElementById("qr-tool-img"), url);
+            if (url.trim() != textObj[l_getBrowserUrlFail] && url.trim() != textObj[l_getBrowserUrlFail_en]){
+                saveLocData(QR_HISTORY, url);
+            }
+        }
     });
 
     $(".submitSetting").click(function(event){
@@ -348,9 +336,104 @@ $(function(){
         setSetting(name,$("#" + name).val(), _this);
     });
 
-    $("#login-button").click(function(){
-        window.open(getWebSiteUrl() + "/loginOrRegister.do#/login");
+    $("#" + ID_URL_ENCODE).click(function(event){
+        setValue(ID_URL_ENCODE_TEXT, encodeURIComponent(getValue(ID_URL_ENCODE_TEXT)));
     });
+    $("#" + ID_URL_DECODE).click(function(event){
+        setValue(ID_URL_ENCODE_TEXT, decodeURIComponent(getValue(ID_URL_ENCODE_TEXT)));
+    });
+
+
+    $("#" + ID_IP_ADDRESS).click(function(event){
+        var ipValue = getValue(ID_IP_TEXT);
+        var result = "";
+        try {
+            if (ipValue && ipValue.trim().length <= 0) {
+                return;
+            }
+            httpPost("https://ip.taobao.com/outGetIpInfo?accessKey=alibaba-inc&ip=" + ipValue, true, function(response) {
+                //0：成功，1：服务器异常，2：请求参数异常，3：服务器繁忙，4：个人qps超出。
+                if (response.code == 0){
+                    setValue(ID_IP_RESULT, format(JSON.stringify(response.data)));
+                } else if (response.code == 1){
+                    setValue(ID_IP_RESULT, "服务器异常「system error」" + ":" + response.msg);
+                } else if (response.code == 2){
+                   setValue(ID_IP_RESULT, "IP地址格式有误「param error」" + ":" + response.msg);
+                } else if (response.code == 3){
+                   setValue(ID_IP_RESULT, "服务器繁忙「system busy」" + ":" + response.msg);
+                } else if (response.code == 4){
+                    setValue(ID_IP_RESULT, "个人qps超出限制，稍后再试「please try later」" + ":" + response.msg);
+                } else {
+                  setValue(ID_IP_RESULT, response.code + ":" + response.msg);
+                }
+            });
+        } catch (e){
+            setValue(ID_IP_RESULT, "网络一次「network error」:" + e);
+        }
+    });
+
+    $("#" + ID_PHONE_BELONG).click(function(event){
+            var phoneValue = getValue(ID_PHONE_BELONG_TEXT);
+            var result = "";
+            try {
+                if (phoneValue && phoneValue.trim().length <= 0) {
+                    return;
+                }
+                httpPost("https://cx.shouji.360.cn/phonearea.php?number=" + phoneValue, true, function(response) {
+                    //0：成功，1：服务器异常，2：请求参数异常，3：服务器繁忙，4：个人qps超出。
+                    if (response.code == 0){
+                        setValue(ID_PHONE_BELONG_RESULT, format(JSON.stringify(response.data)));
+                    } else if (response.code == 1){
+                        setValue(ID_PHONE_BELONG_RESULT, "电话格式有误「param error」" + ":" + response.msg);
+                    } else {
+                      setValue(ID_PHONE_BELONG_RESULT, response.code);
+                    }
+                });
+            } catch (e){
+                setValue(ID_PHONE_BELONG_RESULT, "网络一次「network error」:" + e);
+            }
+    });
+
+
+    $("#" + ID_TO_TIMESTAMP).click(function(event){
+        var timestampText = getValue(ID_TIMESTAMP_TEXT);
+        var result = "";
+        try {
+            if (timestampText && timestampText.trim().length > 0) {
+                if(new Date(timestampText)  && !isNaN(new Date(timestampText) )){
+                    result = new Date(timestampText).getTime();
+                } else {
+                    result = getText(l_input_format_error);
+                }
+            } else {
+                result = new Date().getTime();
+            }
+        } catch (e){
+            result = getText(l_input_format_error) + ":" +  e;
+        }
+        setValue(ID_TIMESTAMP_RESULT, result)
+    });
+
+    $("#" + ID_TO_DATE).click(function(event){
+        var timestampText = getValue(ID_TIMESTAMP_TEXT);
+        var result = "";
+        try {
+            if (timestampText && timestampText.trim().length > 0) {
+                result = timestampText * 1;
+                if (result < 9999999999){
+                    result = result * 1000;
+                }
+            } else {
+                result = new Date().getTime();
+            }
+            result = new Date(result).toLocaleDateString().replace(/\//g, "-") + " " + new Date(result).toTimeString().substr(0, 8);
+        } catch (e){
+            result = getText(l_input_format_error) + ":" +  e;
+        }
+        setValue(ID_TIMESTAMP_RESULT, result)
+    });
+
+
 
 
 	$(".params-headers-table").on("keyup","input", function() {
@@ -420,14 +503,33 @@ $(function(){
                         p[1] = p[1] +":" + p[j];
                     }
                 }
-				var key = p[0];
+				var key = crapTrim(p[0]);
 				var value = "";
 				if(p.length >1 ){
-					value = p[1];
+					value = crapTrim(p[1]);
 				}
-				var tdText = paramsTr.replace("'key'","'key' value='"+key+"'").replace("'value'","'value' value='"+decodeURIComponent(value)+"'");
-				tdText = tdText.replace("last","");
-				$("#"+preId+"-table tbody").append(tdText);
+                var keyInput = document.createElement("input");
+                keyInput.setAttribute("class","form-control") ;
+                keyInput.setAttribute("data-stage","key") ;
+                keyInput.setAttribute("type","text") ;
+                keyInput.setAttribute("value",key) ;
+
+                var valueInput = document.createElement("input");
+                valueInput.setAttribute("class","form-control") ;
+                valueInput.setAttribute("data-stage","value") ;
+                valueInput.setAttribute("type","text") ;
+                valueInput.setAttribute("value",decodeURIComponent(value)) ;
+
+                var tr = document.createElement("tr");
+                var td1 = document.createElement("td");
+                td1.appendChild(keyInput)
+                var td2 = document.createElement("td");
+                td2.appendChild(valueInput)
+                tr.appendChild(td1);
+                tr.appendChild(td2);
+
+                $(tr).append("<td class='w20'><i class='iconfont cursor color-adorn'>&#xe69d;</i></td>");
+                $("#"+preId+"-table tbody").append(tr)
 			}
 		}
 		$("#"+preId+"-table tbody").append(paramsTr);
@@ -488,8 +590,8 @@ $(function(){
 
     // 请求头、参数切换
   $(".params-title").click(function(){
-        $(".params-title").removeClass("bb2");
-        $(this).addClass("bb2");
+        $(".params-title").removeClass("adorn-bb2");
+        $(this).addClass("adorn-bb2");
         var contentDiv = $(this).attr("data-stage");
         $("#headers-div").addClass("none");
         $("#params-div").addClass("none");
@@ -505,8 +607,11 @@ $(function(){
         $(".response-body").addClass("none");
         $(".response-cookie").addClass("none");
         $("."+contentDiv).removeClass("none");
-    });
 
+        if (contentDiv == "response-cookie"){
+            applyPermission();
+        }
+    });
 
 
     $("#method").change(function() {
@@ -543,6 +648,7 @@ $(function(){
 
   // 插件调试send
   $("#send").click(function(){
+      applyPermission();
 	  if( showBulkHeaders ){
 		 $("#headers-bulk-edit-div .key-value-edit").click();
 	  }
@@ -552,33 +658,121 @@ $(function(){
       callAjax();
   });
 
-  // div 拖动
+    // 初始化提示
+    $("#" + ID_NOTICE).click(function(){
+        saveLocData(NOTICE_CLICK, "yes");
+    });
+
+    // 跳转
+    $(".goHref").click(function(){
+        var href = $(this).attr(ATTR_HREF);
+
+        if (!href){
+            return false;
+        }
+
+        if (href.indexOf('PLUG:') == 0){
+            href = href.replace("PLUG:", "");
+        }else if (href.indexOf('http') != 0){
+            href = getWebSiteUrl() + "/" + href;
+        }
+
+        var hrefParamStr = $(this).attr(ATTR_HREF_PARAMS);
+        if (hrefParamStr){
+            var hrefParams = hrefParamStr.split("|");
+            for(var i=0; i<hrefParams.length;i++) {
+                href = href.replace('{{'+ i + "}}", hrefParams[i]);
+            }
+        }
+
+        if ($(this).attr(ATTR_HREF_NEW_PAGE) == TRUE){
+            window.open(href);
+            return false;
+        }
+
+        setAttr(ID_IFRAME_DIALOG_IFRAME, "src", href);
+        setHtml(ID_IFRAME_DIALOG_TITLE, getText($(this).attr(ATTR_HREF_TITLE)))
+        lookUp('iframe-dialog', '', '', 1100 ,7,'');
+        $("#iframe-dialog").css("height","640px");
+        $(".look-up-content").css("height","600px");
+        $("#iframe-dialog").css("top","60px");
+
+        showMessage('iframe-dialog','false',false,-1);
+        showMessage('fade','false',false,-1);
+        return false;// 不在传递至父容器
+    });
+
+    $("#" + ID_QR_TOOL_GET_BROWSER_URL).click(function(){
+        chrome.tabs.query({active:true, currentWindow:true},getBrowserUrlCallBack);
+    });
+
+    // 登陆
+    $("#login-button").click(function(){
+        setAttr(ID_IFRAME_DIALOG_IFRAME, "src", getWebSiteUrl() + "/loginOrRegister.do#/login")
+        setAttr(ID_IFRAME_DIALOG_CLOSE, ATTR_IFRAME_CLOSE, TRUE)
+        setHtml(ID_IFRAME_DIALOG_TITLE, getText(l_loginTitle))
+        lookUp('iframe-dialog', '', '', 1100 ,7,'');
+        $("#iframe-dialog").css("height","640px");
+        $(".look-up-content").css("height","600px");
+        $("#iframe-dialog").css("top","60px");
+
+        showMessage('iframe-dialog','false',false,-1);
+        showMessage('fade','false',false,-1);
+        return false;// 不在传递至父容器
+    });
+
+    // 常用工具
+    $(".develop-tool").click(function(){
+        setAttr(ID_IFRAME_DIALOG_IFRAME, "src",  $(this).attr("crap-data-url"));
+        setAttr(ID_IFRAME_DIALOG_CLOSE, ATTR_IFRAME_CLOSE, "false");
+        setHtml(ID_IFRAME_DIALOG_TITLE, $(this).attr("crap-data-title"));
+        setAttr(ID_IFRAME_DIALOG_IFRAME, "src",  $(this).attr("crap-data-url"));
+       setAttr(ID_IFRAME_DIALOG_IFRAME, "style", $(this).attr("crap-data-style"));
+
+        lookUp('iframe-dialog', '', '', 1100 ,7,'');
+        $("#iframe-dialog").css("height","640px");
+        $(".look-up-content").css("height","600px");
+        $("#iframe-dialog").css("top","60px");
+        showMessage('iframe-dialog','false',false,-1);
+        showMessage('fade','false',false,-1);
+        return false;// 不在传递至父容器
+    });
+
+    $("#" + ID_IFRAME_DIALOG_CLOSE).click(function(){
+        if (getAttr(ID_IFRAME_DIALOG_CLOSE, ATTR_IFRAME_CLOSE) == TRUE) {
+            window.location.reload();
+        }
+        return false;
+    });
+
+    // div 拖动
     $("#left").resizable(
         {
             autoHide: true,
             handles: 'e',
-            maxWidth: 800,
-            minWidth: 260,
+            maxWidth: 700,
+            minWidth: 180,
             resize: function(e, ui)
             {
                 var parentWidth = $(window).width();
                 var remainingSpace = parentWidth - ui.element.width();
 
-                divTwo = $("#right"),
-                    divTwoWidth = remainingSpace/parentWidth*100+"%";
+                var divTwo = $("#right");
+                var divTwoWidth = remainingSpace/parentWidth*100+"%";
                 divTwo.width(divTwoWidth);
             },
             stop: function(e, ui)
             {
                 var parentWidth = $(window).width();
                 var remainingSpace = parentWidth - ui.element.width();
-                divTwo = $("#right");
-                divTwoWidth = remainingSpace/parentWidth*100+"%";
+                var divTwo = $("#right");
+                var divTwoWidth = remainingSpace/parentWidth*100+"%";
                 divTwo.width(divTwoWidth);
                 ui.element.css(
                     {
                         width: ui.element.width()/parentWidth*100+"%",
                     });
+                localStorage[MENU_WIDTH] = ui.element.width()/parentWidth*100;
             }
         });
 })

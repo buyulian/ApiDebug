@@ -1,7 +1,10 @@
 {
     "help":"Help Doc",
+    "true":"True",
+    "false":"False",
     "interfaceName":"Interface Name",
     "interfaceNameTip":"Please input interface name",
+    "searchTip":"Click enter to search",
     "moduleNameTip":"Please input module name",
     "module":"Module",
     "moduleName":"Module Name",
@@ -13,13 +16,37 @@
     "interfaceDebug":"Debug Interface",
     "jsonTool":"Json Tool",
     "officialWebsite":"Official Website",
-    "setting":"Setting (系统设置)",
+    "setting":"Setting-设置",
+    "moreTools":"More Tools(time/encode)...",
+    "moreToolsShort":"More Tools",
+    "urlDecode":"Url Decode",
+    "urlEncode":"Url Encode",
+    "timestampToDate":"Timestamp To Date",
+    "dateToTimestamp":"Date to Timestamp",
+    "ipAddress":"IP Address",
+    "ipAddressTips":"Please input ip address",
+    "phoneBelong":"Phone",
+    "phoneBelongTips":"Please input phone",
+    "dateToTimestampTips":"Input date（yyyy-MM-dd HH:mm:ss）/ timestamp",
+    "urlEncodeTips":"Please input content to encode/decode",
     "login":"Login",
     "loginAndIco":"Login →",
     "registerAndIco":"Register →",
-    "inputJsonTip":"Please input json",
+    "inputJsonTip":"Please input json, Then click [Pretty] ",
     "submit":"Submit",
+    "submitTowLag":"Submit「提交」",
+    "welcomeTip":"超时 Timeout,语言 Language-> Click me!",
     "tip":"Tips:",
+    "helperDocUrl":"http://api.crap.cn/static/help/155037970568801000060.html",
+    "jsonToolDocUrl":"http://api.crap.cn/static/help/155037909955501000049.html",
+    "changeProjectTip":"1. You can't change project until you login.\n 2. After change project, please click 「Sync Data」to get latest data.\n 3. If delete fails, ask project owner, \n     add make sure you have delete permission",
+    "projectList":"Project list:",
+    "createNewProject":"Create new project",
+    "inviteUser":"Invite friend join project",
+    "inviteTip":"「Project Owner」Share invite url to friend, click after login",
+    "contractTip":"Scan code to connection「Wechat」",
+    "loadingTip":"Loading....",
+    "qrTool":"QR Tool",
     "env":{
         "addEnv":"Add Environment",
         "envVariable":"Unselected environment",
@@ -30,10 +57,9 @@
         "varTip1":"1. Environment Variable can used in url,params,header. For Example:{{variable}}"
     },
     "head" :{
-        "title":"Crap | Http Test Plug"
+        "title":"Postwoman | Http Test"
     },
     "nav":{
-        "menu":"Left Menu",
         "loginOut":"Logout",
         "clearLocal":"Clear Local Data",
         "newTab":"New Tab",
@@ -59,24 +85,36 @@
         "row":"Row",
         "pretty":"Pretty",
         "expand":"Expand",
-        "collapseOne":"Collapse One Level",
-        "collapseTwo":"Collapse Two Level",
-        "collapseThree":"Collapse Three Level",
-        "collapseFour":"Collapse Four Level",
+        "collapseOne":"One Level",
+        "collapseTwo":"Two Level",
+        "collapseThree":"Three Level",
+        "collapseFour":"Four Level",
         "nl2br":"Nl2br",
         "help":"Help Doc"
     },
     "response":{
-        "responseTip":"Hit the [Send] button to get a response",
-        "responseHelp":"Click this to get help"
+        "responseTip":"Hit the 「Send」 button to get a response",
+        "responseHelp":"「Click to get help」"
     },
     "set":{
         "language":"Plug Language(语言)",
         "serviceUrl":"Remote Service Url",
         "timeout":"Http Timeout",
+        "menuWidth":"Left menu width",
+        "defMenuWidth":"Default menu width - 15%",
+        "menuWidthTip":"Menu width must be number (%)",
         "inputServiceUrlTip":"Please input remote service website url",
-        "defServiceUrlTip":"Default Service Url : http://api.crap.cn",
+        "defServiceUrlTip":"『Default Service Url』api.crap.cn -- 『Backup url』postwoman.cn , plug.crap.cn , api2.crap.cn ...",
         "inputTimeoutTip":"Please input http timeout (ms)",
-        "defTimeoutTip":"Default timeout — 10000(ms)"
+        "defTimeoutTip":"Default timeout — 10000(ms)",
+        "autoFix":"Auto fix（auto add 'http://' for url, auto trim for param & url）"
+    },
+    "url":{
+        "editInterface":"admin.do#/user/interface/edit?pageName=%E7%BC%96%E8%BE%91%E6%8E%A5%E5%8F%A3&dataType=interface&id={{1}}&menu_a=menu-project&menu_b=menu_interface&projectId={{0}}",
+        "viewInterface":"index.do#/interface/detail?projectId={{0}}&id={{1}}"
+    },
+    "inter":{
+        "editDoc":"Edit doc",
+        "vieDoc":"View doc"
     }
 }

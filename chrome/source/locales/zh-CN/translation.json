@@ -1,7 +1,10 @@
 {
     "help":"帮助文档",
+    "true":"是",
+    "false":"否",
     "interfaceName":"接口名",
     "interfaceNameTip":"请输入接口名",
+    "searchTip":"输入后点击回车搜索",
     "moduleNameTip":"请输入模块名",
     "module":"模块",
     "moduleName":"模块名",
@@ -10,16 +13,40 @@
     "save":" 保存 ",
     "saveAs":"另存为",
     "renameModule":"重命名模块",
+    "urlDecode":"Url 解码",
+    "urlEncode":"Url 编码",
+    "urlEncodeTips":"请输入需要编码/解码的内容",
     "interfaceDebug":"接口调试",
-    "jsonTool":"Json工具",
+    "timestampToDate":"时间戳 转 日期",
+    "dateToTimestamp":"日期 转 时间戳",
+    "ipAddress":"IP地址",
+    "phoneBelong":"电话号码归属地",
+    "phoneBelongTips":"请输入电话号码",
+    "dateToTimestampTips":"请输入时间（yyyy-MM-dd HH:mm:ss）/时间戳",
+    "ipAddressTips":"请输入IP地址",
+    "jsonTool":"JSON",
     "officialWebsite":"官网",
-    "setting":"系统设置(Setting)",
+    "setting":"设置-Setting",
+    "moreToolsShort":"更多工具",
+    "moreTools":"更多工具(时间、编码、IP、电话)...",
     "login":"登录",
     "loginAndIco":"登陆 →",
     "registerAndIco":"登陆 →",
-    "inputJsonTip":"请输入待格式化的Json数据，然后点击上方菜单栏格式化数据；\n如需修改原数据，请切换到原始数据菜单后再修改;",
+    "inputJsonTip":"请输入待格式化的Json数据，然后点击格式化按钮;",
     "submit":"提交",
+    "submitTowLag":"提交「Submit」",
     "tip":"提示：",
+    "welcomeTip":"超时 Timeout,语言 Language-> Click me!",
+    "helperDocUrl":"http://api.crap.cn/static/help/155037947655301000051.html",
+    "jsonToolDocUrl":"http://api.crap.cn/static/help/155032426525701000007.html",
+    "changeProjectTip":"1. 必须登录才能切换项目\n 2. 切换项目后请点击「同步数据」按钮，获取最新数据 \n 3. 如果数据删除失败，请咨询项目拥有者，确保有项目数据删除权限。\n 登陆网站确保模块下其它数据已被删除（文章、错误码等）",
+    "projectList":"项目列表:",
+    "createNewProject":"创建新项目",
+    "inviteUser":"邀请好友加入项目",
+    "inviteTip":"「项目创建者」可分享邀请链接给好友，好友登陆系统后点击链接即可加入，加入后你可前往系统后台设置好友权限",
+    "contractTip":"扫码联系客服「微信」",
+    "loadingTip":"加载中....",
+    "qrTool":"二维码",
     "env":{
         "addEnv":"添加环境",
         "envVariable":"未选择环境",
@@ -31,13 +58,12 @@
 
     },
     "head" :{
-        "title":"Crap | Http接口调试插件"
+        "title":"Postwoman | Http接口调试"
     },
     "nav":{
-        "menu":"左侧菜单",
         "loginOut":"退出",
         "clearLocal":"清除本地数据",
-        "newTab":"打开新页面",
+        "newTab":"新窗口",
         "newInterface":"新建接口",
         "sync":"同步数据"
     },
@@ -48,11 +74,11 @@
         "interfaceUrl":"请输入接口地址",
         "send":"发送",
         "header":"请求头",
-        "param":"请求参数",
+        "param":"参数",
         "batchEdit":"批量编辑",
         "singleEdit":"单个编辑",
         "custom":"自定义格式",
-        "responseBody":"响应主体",
+        "responseBody":"响应体",
         "responseCookie":"Cookie",
         "responseHeader":"响应头"
     },
@@ -68,16 +94,28 @@
         "help":"帮助文档"
     },
     "response":{
-        "responseTip":"请点击【发送】按钮测试接口",
-        "responseHelp":"点击查看帮助文档 ~"
+        "responseTip":"请点击「发送」按钮获取响应结果",
+        "responseHelp":"「帮助文档」"
     },
     "set":{
         "language":"插件语言(Language)",
         "serviceUrl":"远程服务地址",
         "timeout":"网络请求超时时间",
+        "menuWidth":"左侧菜单宽度",
+        "menuWidthTip":"菜单宽度必须为数字 (单位：%)",
+        "defMenuWidth":"默认宽度 - 15%",
         "inputServiceUrlTip":"如已私有部署CRAP接口管理系统，请输入远程服务器地址",
-        "defServiceUrlTip":"默认服务器地址 : http://api.crap.cn",
+        "defServiceUrlTip":"『默认服务器地址』 api.crap.cn -- 『可选服务地址』postwoman.cn , plug.crap.cn , api2.crap.cn ...",
         "inputTimeoutTip":"请输入接口调试超时时间 (单位：毫秒)",
-        "defTimeoutTip":"默认接口调试超时时间 : 10000(毫秒)"
+        "defTimeoutTip":"默认接口调试超时时间 : 10000(毫秒)",
+        "autoFix":"自动修复（url中自动添加http，参数、url中自动trim）"
+    },
+    "url":{
+        "editInterface":"admin.do#/user/interface/edit?pageName=%E7%BC%96%E8%BE%91%E6%8E%A5%E5%8F%A3&dataType=interface&id={{1}}&menu_a=menu-project&menu_b=menu_interface&projectId={{0}}",
+        "viewInterface":"index.do#/interface/detail?projectId={{0}}&id={{1}}"
+    },
+    "inter":{
+        "editDoc":"编辑文档",
+        "vieDoc":"查看文档"
     }
 }

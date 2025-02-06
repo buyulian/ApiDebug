@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title data-i18n="head.title"></title>
+	<link href="source/base.css" rel="stylesheet" type="text/css" />
+	<link href="source/tools/bootstrap.css" rel="stylesheet" type="text/css" />
+	<link href="source/plug.css" rel="stylesheet" type="text/css" />
+	<link href="source/tools/jquery-ui.min.css" rel="stylesheet" type="text/css" />
+	<link href="source/tools/jquery.jsonview.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body class="BGFFF">
+	<input id="id-page-name" type="hidden" value="setting">
+	<div class="h50 CFFF pl20 w shadow fixed z10 pt5" style="background:#233050;">
+		<a href="http://api.crap.cn" target="_blank">
+			<img src="logo.png" class="h30 mt4 ml10 fl">
+		</a>
+
+		<div class="fl mr10 mt10 ml20">
+			<!--<i class="iconfont mr5 mt-1">&#xe6ae;</i>-->
+			<span data-i18n="moreTools" class="f16">更多工具</span>
+		</div>
+		<!--<a href="more.html" target="_self" class="btn btn-menu btn-sm fr mr10 mt5">More...</a>-->
+		<a href="debug.html" target="_self" class="btn btn-menu btn-sm btn-main fr mr10 mt5"><i class='iconfont mt-1 pl10'>&#xe748;</i>
+			<span data-i18n="interfaceDebug">调试接口</span></a>
+	</div>
+				
+	<div class="w min-w900 p50 pt60">
+		<div class="row mb20">
+			<div class="col-xs-12">
+				<div class="bl3 pl10 pt5">
+					更多工具：
+					<a target="_blank" crap-data-style="margin-top:-60px!important;" class="develop-tool cursor no_unl pl10 pr10" crap-data-url="https://googju.com/aes.html" crap-data-title="AES 加密、解密">AES 加密、解密</a>
+					-
+					<a target="_blank" crap-data-style="margin-top:-60px!important;" class="develop-tool cursor no_unl pl10 pr10" crap-data-url="https://googju.com/regexp.html" crap-data-title="正则表达式">正则表达式</a>
+					-
+					<a target="_blank" crap-data-style="margin-top:-60px!important;" class="develop-tool cursor no_unl pl10 pr10" crap-data-url="https://googju.com/base64.html" crap-data-title="BASE64">BASE64</a>
+					-
+					<a target="_blank" crap-data-style="margin-top:-60px!important;" class="develop-tool cursor no_unl pl10 pr10" crap-data-url="https://googju.com/diff.html" crap-data-title="代码对比">代码对比</a>
+					-
+					<a target="_blank" crap-data-style="margin-top:-10px!important;" class="develop-tool cursor no_unl pl10 pr10" crap-data-url="https://sina.lt/" crap-data-title="短链接">短链接</a>
+					-
+					<a target="_blank" crap-data-style="margin-top:-60px!important;" class="develop-tool cursor no_unl pl10 pr10" crap-data-url="https://googju.com/qrcode.html" crap-data-title="二维码制作">二维码制作</a>
+					-
+					<a target="_blank" crap-data-style="margin-top:-60px!important;" class="develop-tool cursor no_unl pl10 pr10" crap-data-url="https://googju.com/image-generator.html" crap-data-title="占位图片生成器">占位图片生成器</a>
+					-
+					<a target="_blank" crap-data-style="margin-top:-60px!important;" class="develop-tool cursor no_unl pl10 pr10" crap-data-url="http://api.crap.cn/static/tools/moreTools.html" crap-data-title="更多工具">更多工具</a>
+
+					<!--<a target="_blank" crap-data-style="margin-top:-60px!important;" class="develop-tool cursor no_unl pl10 pr10" crap-data-url="https://api.crap.cn/static/163385793810007028022/163385795244801028024.html" crap-data-title="更多工具">更多工具...</a>-->
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-4">
+				<div class="shadow-3 p10 BGF9">
+					<div class="bl3 pl10 f16">
+						<span  data-i18n="urlEncode"></span> /
+						<span  data-i18n="urlDecode"></span>
+					</div>
+					<textarea id="id-url-encode-text" rows="10" class="form-control w h BGFFF mt20" data-i18n="[placeholder]urlEncodeTips"></textarea>
+					<button class="btn btn-main btn-sm  mt10 w-48 fl" id="id-url-encode" data-i18n="urlEncode">编码</button>
+					<div class="w-4 fl CFFF">---</div>
+					<button class="btn btn-default btn-sm  mt10 w-48 fl" id="id-url-decode" data-i18n="urlDecode">解码</button>
+					<div class="cb"></div>
+				</div>
+			</div>
+
+			<div class="col-xs-4">
+				<div class="shadow-3 p10 BGF9">
+					<div class="bl3 pl10 f16">
+						<span  data-i18n="timestampToDate"></span> /
+						<span  data-i18n="dateToTimestamp"></span>
+					</div>
+					<input id="id-timestamp-text" class="form-control w h mt20"  data-i18n="[placeholder]dateToTimestampTips"/>
+					<textarea id="id-timestamp-result" rows="7" class="form-control w h BGF9 mt20" disabled="true"></textarea>
+
+					<button class="btn btn-main btn-sm mt10 w-48 fl" id="id-to-date" data-i18n="timestampToDate"></button>
+					<div class="w-4 fl CFFF">---</div>
+					<button class="btn btn-default btn-sm mt10 w-48 fl" id="id-to-timestamp" data-i18n="dateToTimestamp"></button>
+					<div class="cb"></div>
+				</div>
+			</div>
+
+			<div class="col-xs-4">
+				<div class="shadow-3 p10 BGF9">
+					<div class="bl3 pl10 f16" data-i18n="ipAddress"></div>
+					<input id="id-ip-text" class="form-control w h mt20"  data-i18n="[placeholder]ipAddressTips"/>
+					<textarea id="id-ip-result" rows="7" class="form-control w h BGF9 mt20" disabled="true"></textarea>
+					<button class="btn btn-main btn-sm mt10 w-48" id="id-ip-address" data-i18n="submit"></button>
+					<div class="w-4 fr CFFF">---</div>
+					<div class="cb"></div>
+				</div>
+			</div>
+
+		</div>
+		<div class="row mt15">
+			<div class="col-xs-4">
+				<div class="shadow-3 p10 BGF9">
+					<div class="bl3 pl10 f16" data-i18n="phoneBelong"></div>
+					<input id="id-phone-belong-text" class="form-control w h mt20"  data-i18n="[placeholder]phoneBelongTips"/>
+					<textarea id="id-phone-belong-result" rows="7" class="form-control w h BGF9 mt20" disabled="true"></textarea>
+					<button class="btn btn-main btn-sm  mt10 w-48" id="id-phone-belong" data-i18n="submit"></button>
+					<div class="w-4 fr CFFF">---</div>
+					<div class="cb"></div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+	<div id="iframe-dialog" class="look-up shadow p0 of-h">
+		<div id="id-iframe-dialog-title" class="CFFF f16 shadow" style="line-height:40px;padding-left:20px; height:40px; background-color:#233050;"></div>
+		<div class="look-up-content b0 f12 tl p0 m0 of-h">
+			<iframe id="iframe-dialog-iframe" class="w h b0 m0" style="margin-top:-60px!important;"></iframe>
+		</div>
+		<i class="iconfont i-close CFFF fb f16 close-dialog" id="iframe-dialog-close"  crap-data="iframe-dialog">&#xe69a;</i>
+	</div>
+
+	<script src="source/constant.js"></script>
+	<script src="source/tools/jquery-1.9.1.min.js"></script>
+	<script src="source/tools/i18next-1.11.2.min.js"></script>
+	<script src="source/tools/bootstrap.js"></script>
+	<script src="source/base-dao.js"></script>
+	<script src="source/interface-dao.js"></script>
+	<script src="source/module-dao.js"></script>
+	<script src="source/plug-function.js"></script>
+	<script src="source/crapApi.js"></script>
+	<script src="source/json.js"></script>
+	<script type="text/javascript" src="source/tools/jquery-ui.min.js"></script>
+</body>
+</html>
