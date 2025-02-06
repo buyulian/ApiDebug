@@ -34,6 +34,47 @@ $(function(){
         syncProject();
     });
 
+    // 数据同步服务器
+    $("#export-data").click(function() {
+        exportData();
+    });
+
+    // 数据同步服务器
+    $("#import-data").click(function() {
+        importData();
+    });
+    $('#import-data').on('change', function(event) {
+        var file = event.target.files[0]; // 获取选中的文件
+    
+        if (file) {
+            // 创建FileReader对象来读取文件
+            var reader = new FileReader();
+
+            // 定义文件读取完成后的回调函数
+            reader.onload = function(e) {
+                var content = e.target.result;
+                // 尝试将读取的内容解析为JSON对象
+                try {
+                    var jsonObj = JSON.parse(content);
+                    localStorage.clear();
+                    // 遍历JSON对象并将键值对存储到localStorage
+                    for (var key in jsonObj) {
+                        if (jsonObj.hasOwnProperty(key)) {
+                            localStorage.setItem(key, jsonObj[key]);
+                        }
+                    }
+                    alert('JSON数据已成功导入到localStorage。');
+                } catch (error) {
+                    console.error('Error parsing JSON:', error);
+                    alert('解析JSON失败。');
+                }
+            };
+
+            // 读取文件内容为文本
+            reader.readAsText(file);
+        }
+      });
+
     $("#id-search").keyup(function(event){
         if (event != null && event.keyCode != 13){
             return;

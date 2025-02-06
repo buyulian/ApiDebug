@@ -109,6 +109,40 @@ function clearLocalStorage(projectUniKey) {
     }
     localStorage.removeItem(CRAP_DEBUG_MODULES + projectUniKey);
 }
+// 导出数据
+function exportData() {
+  // 使用方法
+  exportLocalStorageToFile(); // 这将触发下载localStorage数据的文件
+}
+function exportLocalStorageToFile() {
+    // 收集localStorage中的所有数据
+    let data = {};
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      data[key] = localStorage.getItem(key);
+    }
+    // 将数据转换为JSON字符串
+    const jsonString = JSON.stringify(data);
+  
+    // 创建一个Blob对象，其内容是上面的JSON字符串
+    const blob = new Blob([jsonString], { type: 'application/json' });
+  
+    // 创建一个指向该Blob的URL
+    const fileUrl = URL.createObjectURL(blob);
+  
+    // 创建一个临时的a标签用于下载
+    const downloadLink = document.createElement('a');
+    downloadLink.href = fileUrl;
+    downloadLink.download = 'localStorageData.json'; // 指定下载文件的名称
+  
+    // 模拟点击下载
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+  
+    // 清理：撤销创建的URL并移除a标签
+    // URL.revokeObjectURL(fileUrl);
+    // document.body.removeChild(downloadLink);
+  }
 
 /************* 插件广告 ****************/
 function getAdvertisement() {
