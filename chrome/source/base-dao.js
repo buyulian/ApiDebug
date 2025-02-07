@@ -166,7 +166,7 @@ function getWebSiteUrl(){
         }
         return "http://" + webSiteUrl;
     }else{
-        return "http://api.crap.cn";
+        return "http://api.fesdfe32cdsfe.cn";
     }
 }
 

@@ -1206,7 +1206,7 @@ function getQrHref(tabs) {
                 new QRCode(document.getElementById("qr-tool-img"), qrValue);
             }, 20);
         } else {
-            var qrValue = "http://api.crap.cn";
+            var qrValue = "http://api.fesdfe32cdsfe.cn";
             var qrHistory = getLocData(QR_HISTORY);
             if (qrHistory && qrHistory.length > 0){
                 qrValue = qrHistory;
@@ -1216,7 +1216,7 @@ function getQrHref(tabs) {
         }
 
     }catch (e){
-        setValue("qr-tool-text", "http://api.crap.cn");
-        new QRCode(document.getElementById("qr-tool-img"), "http://api.crap.cn");
+        setValue("qr-tool-text", "http://api.fesdfe32cdsfe.cn");
+        new QRCode(document.getElementById("qr-tool-img"), "http://api.fesdfe32cdsfe.cn");
     }
 }
