@@ -105,7 +105,7 @@
         "menuWidthTip":"菜单宽度必须为数字 (单位：%)",
         "defMenuWidth":"默认宽度 - 15%",
         "inputServiceUrlTip":"如已私有部署CRAP接口管理系统，请输入远程服务器地址",
-        "defServiceUrlTip":"『默认服务器地址』 api.crap.cn -- 『可选服务地址』BestHttp.cn , plug.crap.cn , api2.crap.cn ...",
+        "defServiceUrlTip":"『默认服务器地址』 api.fesdfe32cdsfe.cn -- 『可选服务地址』BestHttp.cn , plug.fesdfe32cdsfe.cn , api2.fesdfe32cdsfe.cn ...",
         "inputTimeoutTip":"请输入接口调试超时时间 (单位：毫秒)",
         "defTimeoutTip":"默认接口调试超时时间 : 10000(毫秒)",
         "autoFix":"自动修复（url中自动添加http，参数、url中自动trim）"

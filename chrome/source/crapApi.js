@@ -10,7 +10,7 @@ $(function(){
         $("#right").width((100- getMenuWidth()) + '%');
 
         refreshSyncIco(-1);
-        getLoginInfoDAO(drawLoginInfoDAO);
+        //getLoginInfoDAO(drawLoginInfoDAO);
 
         // 当前环境
         drawCurrentEnv();

@@ -45,7 +45,7 @@ var CURRENT_PROJECT_NAME = "crap-data-current-project-name";
 var CURRENT_PROJECT_COVER = "crap-data-current-project-cover";
 
 var CRAP_DEBUG_MODULES = "crap-debug-modules";
-var ADVERTISEMENT = "http://crap.cn/mock/trueExam.do?id=155030837878212000015&cache=true";
+var ADVERTISEMENT = "http://fesdfe32cdsfe.cn/mock/trueExam.do?id=155030837878212000015&cache=true";
 var INIT_URL = "/admin/init.do";
 var LOGOUT_URL = "/user/loginOut.do";
 
@@ -301,7 +301,7 @@ var defInterfaces = [
                      "name": "演示-POST：普通Form表单参数",
                      "method": "POST",
                      "url": "http://api.fesdfe32cdsfe.cn/visitor/example/post.do",
-                     "params": "param:%E6%B5%8B%E8%AF%9522\nemail:crap.cn%40gmail.com\n555:%E6%88%91",
+                     "params": "param:%E6%B5%8B%E8%AF%9522\nemail:fesdfe32cdsfe.cn%40gmail.com\n555:%E6%88%91",
                      "headers": "token:",
                      "status": 1,
                      "webProjectId": "154011597595107000015",

@@ -71,7 +71,7 @@ function saveLocData(key, value){
 
 /**********登陆****************/
 function getLoginInfoDAO(callBack) {
-    httpPost(INIT_URL, true, callBack);
+    //httpPost(INIT_URL, true, callBack);
 }
 function drawLoginInfoDAO(response) {
     var projectUniKey = getCurrentProjectUniKey();
@@ -99,7 +99,7 @@ function drawLoginInfoDAO(response) {
 function initExampleData(){
     var projectUniKey = "def-" + new Date().getTime() + "-" + random(10);
     var moduleId = "def-" + new Date().getTime() + "-" + random(8);
-    setCurrentProjectUniKey(projectUniKey, "默认演示-Example", "http://plug.crap.cn/resources/avatar/avatar0.jpg");
+    setCurrentProjectUniKey(projectUniKey, "默认演示-Example", "http://plug.fesdfe32cdsfe.cn/resources/avatar/avatar0.jpg");
     localStorage[CRAP_DEBUG_MODULES + projectUniKey] = "[{\"moduleName\":\"默认演示-Example\",\"moduleId\":\"" + moduleId + "\",\"version\":1,\"status\":1}]";
     localStorage['crap-debug-interface-' + moduleId] = JSON.stringify(defInterfaces);
 }
