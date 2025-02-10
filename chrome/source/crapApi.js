@@ -182,6 +182,11 @@ $(function(){
         $("#module-id").val(urlInfo.moduleId);
         $("#interface-name").val(handerStr(urlInfo.name));
         $("#headers-bulk").val(urlInfo.headers);
+
+        var systemConfig = urlInfo.systemConfig;
+        if(systemConfig) {
+            $("#system-div-timeout").val(systemConfig.timeout);
+        }
         $("#method").val(urlInfo.method);
         $("#method").change();
 
@@ -636,6 +641,7 @@ $(function(){
         var contentDiv = $(this).attr("data-stage");
         $("#headers-div").addClass("none");
         $("#params-div").addClass("none");
+        $("#system-div").addClass("none");
         $("#"+contentDiv).removeClass("none");
   });
 

@@ -52,7 +52,7 @@ function syncProject() {
                         for(var j=debugs.length-1;j>=0;j--){
                             saveInterfaceDetail(debugs[j].moduleUniKey, debugs[j].paramType, debugs[j].uniKey,
                                 debugs[j].name, debugs[j].method, debugs[j].url, debugs[j].params,
-                                debugs[j].headers, debugs[j].version, debugs[j].status,
+                                debugs[j].headers, debugs[j].systemConfig, debugs[j].version, debugs[j].status,
                                 debugs[j].webProjectId, debugs[j].webModuleId, debugs[j].webId);
                         }
                     }
@@ -484,7 +484,10 @@ function callAjax() {
 
     $("#float").fadeIn(300);
 
-    var httpTimeout = getHttpTimeout();
+    var httpTimeout = $("#system-div-timeout").val();
+    if(!httpTimeout) {
+        httpTimeout = getHttpTimeout();
+    }
     var timingTime = httpTimeout;
 
     // 倒计时提示
@@ -786,7 +789,7 @@ function saveModule(moduleName, moduleId,version,status) {
     refreshSyncIco(0);
     return modules;
 }
-function saveInterfaceDetail(moduleId, paramType, id, name, method, url, params, headers,version,status,webProjectId,webModuleId,webId) {
+function saveInterfaceDetail(moduleId, paramType, id, name, method, url, params, headers, systemConfig,version,status,webProjectId,webModuleId,webId) {
     var interfaces;
     try {
         var localInterfaces = localStorage['crap-debug-interface-' + moduleId];
@@ -808,6 +811,7 @@ function saveInterfaceDetail(moduleId, paramType, id, name, method, url, params,
         "url": url,
         "params": params,
         "headers": headers,
+        "systemConfig": systemConfig,
         "version":version,
         "status":status,
         "webProjectId" : webProjectId,
@@ -903,7 +907,11 @@ function saveInterface(moduleId, saveAs) {
 
     var name = $("#save-interface-name").val();
     var url = $("#url").val();
-    saveInterfaceDetail(moduleId, paramType, id, name, method, url, params, headers, 0, 1, null, null, null);
+    var timeout = $("#system-div-timeout").val();
+    var systemConfig = {
+        timeout: timeout
+    }
+    saveInterfaceDetail(moduleId, paramType, id, name, method, url, params, headers, systemConfig, 0, 1, null, null, null);
     closeMyDialog("dialog");
     getLocalModules();
     return true;

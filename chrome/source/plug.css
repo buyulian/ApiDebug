@@ -96,7 +96,7 @@ input{
     background: #666666;
     color: #ffffff;
 }
-#params-div .iconfont, #headers-div .iconfont {
+#params-div .iconfont, #headers-div .iconfont, #system-div .iconfont {
     color:#999999;
     font-size:12px;
     cursor: pointer;
