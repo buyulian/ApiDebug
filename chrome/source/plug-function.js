@@ -468,14 +468,19 @@ function callAjax() {
     // 变量
     // "signType=tm_cn&storeId=%7B%7BstoreId%7D%7D&from=xlsgzt"
     var varList = getAllVar(getCurrentEnvId())
+    var varMap = {}
     for(var i = 0 ; i< varList.length; i++){
         var variable = varList[i];
+        varMap[variable.key] = variable.value;
         url = url.replace(new RegExp("\\{\\{" + variable.key + "\\}\\}", "g"), variable.value);
         url = url.replace(new RegExp("%7B%7B" + variable.key + "%7D%7D", "g"), variable.value);
 
         params = params.replace(new RegExp("\\{\\{" + variable.key + "\\}\\}", "g"), variable.value);
         params = params.replace(new RegExp("%7B%7B" + variable.key + "%7D%7D", "g"), variable.value);
     }
+
+    url = evaluateExpression(url, methodMap, varMap)
+    params = evaluateExpression(params, methodMap, varMap)
 
     $("#float").fadeIn(300);
 
