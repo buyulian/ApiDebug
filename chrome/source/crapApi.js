@@ -184,8 +184,10 @@ $(function(){
         $("#headers-bulk").val(urlInfo.headers);
 
         var systemConfig = urlInfo.systemConfig;
-        if(systemConfig) {
+        if(systemConfig && systemConfig.timeout) {
             $("#system-div-timeout").val(systemConfig.timeout);
+        } else {
+            $("#system-div-timeout").val(20000);
         }
         $("#method").val(urlInfo.method);
         $("#method").change();
