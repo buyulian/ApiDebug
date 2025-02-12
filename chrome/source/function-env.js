@@ -4,12 +4,7 @@ function evaluateExpression(str, methodMap, varMap) {
         var str11 = exeFunctionAndReturnStr(expr, methodMap, varMap)
         return str11;
     });
-    var str4 = encodeURI(str2)
-    // str = str.replace(/%7B%7B(.*?)%7D%7D/g, (match, expr) => {
-    //     var str1 = exeFunctionAndReturnStr(expr, methodMap, varMap)
-    //     return str1;
-    // });
-    return str4;
+    return str2;
 }
 
 function exeFunctionAndReturnStr(expression, methodMap, varMap) {
