@@ -298,3 +298,8 @@ table{border-collapse:collapse;border-spacing:0}
     background: rgba(0,0,0,.6);
     z-index:1;
 }
+
+.json-btn {
+	width: 80px !important;
+	margin-right: 5px;
+}

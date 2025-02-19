@@ -30,7 +30,6 @@
 			<td class="w-50 pt75 p10 pb0">
 				<!--response-menu-->
 				<button type="button" class="btn btn-main btn-sm fl r0" data-i18n="json.row">原始返回</button>
-				<a class="btn btn-default btn-default btn-sm r0 fr" target="_blank" href="http://api.fesdfe32cdsfe.cn/static/help/155037909955501000049.html"><i class="iconfont">&#xe6a3; 帮助</i></a>
 			</td>
 			<td class="w-50 pt75 p10 pb0">
 				<!--response-menu-->
@@ -52,8 +51,17 @@
 				<div class="w p10 h">
 					<!--row-->
 					<textarea id="response-row" class="w h BGFFF b1 min-h500 no-resize p10" data-i18n="[placeholder]inputJsonTip"></textarea>
-					<button type="button" class="form-control btn-main mt10 btn " id="json-html-format-pretty">
+					<button type="button" class="form-control btn-main mt10 btn json-btn" id="json-html-format-pretty">
 						<span data-i18n="json.pretty">格式化</span> <i class="iconfont">&#xe6a7;</i>
+					</button>
+					<button type="button" class="form-control btn-main mt10 btn json-btn" id="json-html-compress-pretty">
+						<span>压缩</span> <i class="iconfont">&#xe6a7;</i>
+					</button>
+					<button type="button" class="form-control btn-main mt10 btn json-btn" id="json-html-escape-pretty">
+						<span>转义</span> <i class="iconfont">&#xe6a7;</i>
+					</button>
+					<button type="button" class="form-control btn-main mt10 btn json-btn" id="json-html-unescape-pretty">
+						<span>反转义</span> <i class="iconfont">&#xe6a7;</i>
 					</button>
 				</div>
 			</td>

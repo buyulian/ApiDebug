@@ -144,31 +144,6 @@ function exportLocalStorageToFile() {
     // document.body.removeChild(downloadLink);
   }
 
-/************* 插件广告 ****************/
-function getAdvertisement() {
-    try {
-        var result = httpPost(ADVERTISEMENT, true, getAdvertisementCallback, null);
-    }catch (e){
-        console.error(e);
-    }
-}
-function getAdvertisementCallback(result) {
-    try {
-        if (result.text && result.text != '') {
-            setHtml("id-advertisement-text", result.text);
-            showDiv("id-advertisement-text");
-        }
-        if (result.imgUrl && result.imgUrl != '') {
-            setAttr("id-advertisement-img", "src", result.imgUrl);
-        }
-        if (result.href && result.href != '') {
-            setAttr("id-advertisement-href", "href", result.href);
-        }
-    }catch (e){
-        console.error(e);
-    }
-}
-
 /********* html基本操作方法**********/
 function setHtml(id, html) {
     $("#" + id).html(html);

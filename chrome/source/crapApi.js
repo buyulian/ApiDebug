@@ -17,8 +17,6 @@ $(function(){
         drawNotice();
         drawCurrentProject();
 
-
-        // getAdvertisement();
     } else if (pageName == "setting"){
         $("#" + WEB_SITE_URL).val(getWebSiteUrl());
         $("#" + WEB_HTTP_TIMEOUT).val(getHttpTimeout());
@@ -210,19 +208,9 @@ $(function(){
         $(".interface").removeClass("bg-main");
         $(this).addClass("bg-main");
 
-        hiddenDiv(ID_WEB_EDIT_INTERFACE);
-        hiddenDiv(ID_WEB_VIEW_INTERFACE);
-        // 编辑、查看接口
-        if (urlInfo.webModuleId != null && urlInfo.webProjectId != null && urlInfo.webId != null){
-            setAttr(ID_WEB_EDIT_INTERFACE, ATTR_HREF_PARAMS, urlInfo.webProjectId + "|" + urlInfo.webId);
-            setAttr(ID_WEB_VIEW_INTERFACE, ATTR_HREF_PARAMS, urlInfo.webProjectId + "|" + urlInfo.webId);
-            showDiv(ID_WEB_EDIT_INTERFACE);
-            showDiv(ID_WEB_VIEW_INTERFACE);
-        }
     });
 
     $("#historys").on("click","div", function() {
-        hiddenDiv(ID_WEB_EDIT_INTERFACE);
         hiddenDiv(ID_WEB_VIEW_INTERFACE);
 
         var urlInfo = $.parseJSON( decodeURIComponent($(this).attr("crap-data")) );
@@ -255,7 +243,6 @@ $(function(){
     });
 
     $("#new-interface").click(function() {
-        hiddenDiv(ID_WEB_EDIT_INTERFACE);
         hiddenDiv(ID_WEB_VIEW_INTERFACE);
 
         $("#interface-name").val("");

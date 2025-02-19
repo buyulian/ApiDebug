@@ -19,6 +19,82 @@ $("#json-html-format-pretty").click(function(){
     }
 });
 
+$("#json-html-compress-pretty").click(function(){
+    var rowData = $("#response-row").val();
+
+    try{
+        var jsonFormatResult = compressJson(rowData);
+        if (jsonFormatResult != null && jsonFormatResult != '') {
+            $("#response-row").val(jsonFormatResult);
+        }
+    } catch(e){
+        console.warn(e)
+    }
+});
+
+$("#json-html-escape-pretty").click(function(){
+    var rowData = $("#response-row").val();
+
+    try{
+        var jsonFormatResult = escapeJson(rowData);
+        if (jsonFormatResult != null && jsonFormatResult != '') {
+            $("#response-row").val(jsonFormatResult);
+        }
+    } catch(e){
+        console.warn(e)
+    }
+});
+
+$("#json-html-unescape-pretty").click(function(){
+    var rowData = $("#response-row").val();
+
+    try{
+        var jsonFormatResult = unescapeString(rowData);
+        if (jsonFormatResult != null && jsonFormatResult != '') {
+            $("#response-row").val(jsonFormatResult);
+        }
+    } catch(e){
+        console.warn(e)
+    }
+});
+
+function compressJson(jsonString) {
+    try {
+      // 解析JSON字符串
+      const jsonObj = JSON.parse(jsonString);
+      // 使用JSON.stringify重新转换为字符串，不包含空白字符
+      return JSON.stringify(jsonObj);
+    } catch (error) {
+      // 如果解析失败，返回错误信息
+      return `Invalid JSON string: ${error.message}`;
+    }
+  }
+
+  function escapeJson(jsonString) {
+    // 替换JSON字符串中的特殊字符
+    return jsonString
+      .replace(/\\/g, '\\\\') // 反斜杠
+      .replace(/"/g, '\\"')   // 双引号
+      .replace(/\n/g, '\\n')  // 换行符
+      .replace(/\r/g, '\\r')  // 回车符
+      .replace(/\t/g, '\\t')  // 制表符
+  }
+  
+  function unescapeString(escapedString) {
+    // 创建一个映射转义字符到它们原本的字符
+    const unescapeChars = {
+      '\\\\': '\\',
+      '\\n': '\n',
+      '\\r': '\r',
+      '\\t': '\t',
+      '\\"': '"',
+      "\\'": "'"
+    };
+  
+    // 使用replace方法替换所有转义字符
+    return escapedString.replace(/\\\\|\\b|\\n|\\r|\\t|\\f|\\"|\\'/g, match => unescapeChars[match]);
+  }
+
 $('.json-html-response-json').on('click', function() {
 
     var jsonStr = $("#response-row").val();
